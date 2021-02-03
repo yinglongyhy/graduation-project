@@ -1,0 +1,21 @@
+# 数据库
+#spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+#spring.datasource.url=jdbc:mysql://localhost:3307/fang?useUnicode=true&characterEncoding=utf-8
+spring:
+  datasource.url: jdbc:p6spy:mysql://localhost:3307/fang?useUnicode=true&characterEncoding=utf-8
+  datasource.driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+#  datasource.url: jdbc:mysql://localhost:3307/fang?useUnicode=true&characterEncoding=utf-8
+#  datasource.driver-class-name: com.mysql.cj.jdbc.Driver
+  datasource.username: root
+  datasource.password: root
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  mapper-locations:
+    - classpath:/mapper/**.xml
