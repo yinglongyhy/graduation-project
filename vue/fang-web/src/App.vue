@@ -1,22 +1,23 @@
 <template>
   <div id="app">
     <Header></Header>
-    <div id="nav">
+    <FangList></FangList>
+    <!-- <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
-    <router-view/>
+    <router-view/> -->
   </div>
 </template>
 
 <script>
 import Header from '@/components/Header.vue'
-// import Menu from '@/components/Menu.vue'
+import FangList from '@/views/FangList.vue'
 export default {
   name: 'App',
   components: {
-    Header
-    // Menu
+    Header,
+    FangList
   }
 }
 </script>
