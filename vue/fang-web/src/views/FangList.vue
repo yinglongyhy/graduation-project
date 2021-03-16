@@ -1,12 +1,32 @@
 <template>
   <div id="fangList">
     <el-card class="box-card">
-      <el-radio-group v-model="address" size="medium">
-        <el-radio-button name="0001" label="上海"></el-radio-button>
-        <el-radio-button name="0002" label="北京"></el-radio-button>
-        <el-radio-button name="0003" label="广州"></el-radio-button>
-        <el-radio-button name="0004" label="深圳"></el-radio-button>
-      </el-radio-group>
+      <el-form
+        ref="form"
+        label-position="left"
+        :model="form"
+        label-width="80px"
+        style="text-align: left"
+      >
+        <el-form-item label="区域">
+          <el-radio-group v-model="form.address" size="mini">
+            <el-radio-button
+              v-for="addr in addresses"
+              :label="addr"
+              :key="addr"
+            ></el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="租金">
+          <el-radio-group v-model="form.price" size="mini">
+            <el-radio-button
+              v-for="price in prices"
+              :label="price"
+              :key="price"
+            ></el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
     </el-card>
     <el-main></el-main>
   </div>
@@ -17,16 +37,46 @@ export default {
   name: "FangList",
   data() {
     return {
-      address: "上海"
+      addresses: [
+        "不限",
+        "增城",
+        "番禺",
+        "南沙",
+        "花都",
+        "白云",
+        "海珠",
+        "越秀",
+      ],
+      prices: [
+        "不限",
+        "500元以下",
+        "500-1000元",
+        "2000-3000元",
+        "3000-5000元",
+        "5000-8000元",
+        "8000元以上"
+      ],
+      form: {
+        address: "不限",
+        price: "不限",
+        name: "",
+        region: "",
+        date1: "",
+        date2: "",
+        delivery: false,
+        type: [],
+        resource: "",
+        desc: "",
+      },
     };
   },
-  methods: {}
+  methods: {},
 };
 </script>
 
 <style lang="stylus" scoped>
 .text {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .item {
