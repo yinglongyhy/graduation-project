@@ -28,15 +28,46 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-main></el-main>
+    <el-main class="wrap">
+      <HouseList :items="this.items"></HouseList>
+    </el-main>
+    <el-main>
+      <el-pagination layout="prev, pager, next" :total="items.length"> </el-pagination>
+    </el-main>
   </div>
 </template>
 
 <script>
+import HouseList from "@/components/HouseList.vue";
 export default {
   name: "FangList",
+  components: {
+    HouseList,
+  },
   data() {
     return {
+      items: [
+        {
+          id: 1,
+          detailUrl: "//#",
+          lables: ["离地铁近", "近珠江", "楼下超市"],
+          address: "荔湾区",
+          price: 55.5,
+          titleText: "test",
+          img:
+            "https://img30.360buyimg.com/popWaterMark/jfs/t3361/148/2155093456/104676/68d1dbcf/5843abb6N2aa9852c.jpg",
+        },
+        {
+          id: 2,
+          detailUrl: "//#",
+          lables: ["离地铁近", "近珠江", "楼下超市"],
+          address: "荔湾区",
+          price: 55.5,
+          titleText: "test",
+          img:
+            "https://img30.360buyimg.com/popWaterMark/jfs/t3361/148/2155093456/104676/68d1dbcf/5843abb6N2aa9852c.jpg",
+        },
+      ],
       addresses: [
         "不限",
         "增城",
@@ -54,7 +85,7 @@ export default {
         "2000-3000元",
         "3000-5000元",
         "5000-8000元",
-        "8000元以上"
+        "8000元以上",
       ],
       form: {
         address: "不限",
@@ -87,5 +118,10 @@ export default {
   width: 40%;
   margin-top: 30px;
   margin-left: 30%;
+}
+
+.wrap {
+  width: 1200px;
+  margin: 0 auto;
 }
 </style>
