@@ -38,6 +38,7 @@ public class HouseInfoServiceImpl extends ServiceImpl<HouseInfoMapper, HouseInfo
         }
         for (Picture picture : pictureList) {
 
+
         }
     }
 }

@@ -16,6 +16,7 @@ public class GenerateByMybatisPlus {
         GlobalConfig gc = new GlobalConfig();
         gc.setAuthor("yinglongyhy")
                 .setOutputDir(projectPath + "/src/main/java")
+//                .setOutputDir("/tmp")
                 .setOpen(false)
                 .setSwagger2(true)
                 .setControllerName("%sRestController")
@@ -37,7 +38,7 @@ public class GenerateByMybatisPlus {
         StrategyConfig sc = new StrategyConfig();
         sc.setNaming(NamingStrategy.underline_to_camel)
                 .setColumnNaming(NamingStrategy.underline_to_camel)
-                .setExclude("label2house_info", "picture2house_info", "video2house_info")
+//                .setExclude("label2house_info", "picture2house_info", "video2house_info")
                 .setLogicDeleteFieldName("deleted")
                 .setEntityLombokModel(true)
 //                .setTablePrefix("tbl_")
