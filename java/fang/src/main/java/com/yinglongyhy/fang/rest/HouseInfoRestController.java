@@ -42,4 +42,14 @@ public class HouseInfoRestController {
     }
 
 
+    @Autowired
+    private IHouseInfoService houseInfoService;
+
+    @PostMapping("save")
+    @ApiOperation(value = "保存房屋信息", notes = "保存房屋信息，新增或修改")
+    public ResponseEntity save(@RequestBody HouseInfoDto houseInfoDto) {
+        houseInfoService.save(houseInfoDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

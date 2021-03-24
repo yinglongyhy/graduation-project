@@ -34,6 +34,9 @@ public class Picture implements Serializable {
     @ApiModelProperty(value = "图片名称，带后缀")
     private String name;
 
+    @ApiModelProperty(value = "图片原名称，带后缀")
+    private String originalName;
+
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
 
@@ -45,6 +48,11 @@ public class Picture implements Serializable {
     private Integer deleted;
 
     public Picture(String name) {
+        this(name, null);
+    }
+
+    public Picture(String name, String originalName) {
         this.name = name;
+        this.originalName = originalName;
     }
 }
