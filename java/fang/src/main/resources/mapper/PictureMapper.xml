@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="com.yinglongyhy.fang.entity.Picture">
         <id column="id" property="id" />
         <result column="name" property="name" />
+        <result column="original_name" property="originalName" />
         <result column="create_time" property="createTime" />
         <result column="modified_time" property="modifiedTime" />
         <result column="deleted" property="deleted" />
