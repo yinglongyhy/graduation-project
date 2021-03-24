@@ -1,5 +1,6 @@
 package com.yinglongyhy.fang.service;
 
+import com.yinglongyhy.fang.dto.HouseInfoDto;
 import com.yinglongyhy.fang.entity.HouseInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IHouseInfoService extends IService<HouseInfo> {
 
+    void save(HouseInfoDto houseInfoDto);
 }
