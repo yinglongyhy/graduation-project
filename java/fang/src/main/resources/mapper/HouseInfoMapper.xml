@@ -17,4 +17,52 @@
         <result column="deleted" property="deleted" />
     </resultMap>
 
+    <resultMap id="HouseInfoResponseMap" type="com.yinglongyhy.fang.dto.HouseInfoResponseDto">
+        <result column="owner" property="owner"></result>
+        <result column="tenant" property="tenant"></result>
+        <result column="leaseRent" property="leaseRent"></result>
+        <result column="address" property="address"></result>
+        <result column="description" property="description"></result>
+        <result column="area" property="area"></result>
+        <result column="rent" property="rent"></result>
+        <result column="rented" property="rented"></result>
+        <!--
+        property：填写POJO类中集合类型属性的名称
+        -->
+        <collection property="pictureList" ofType="string">
+            <result column="picture"></result>
+        </collection>
+        <collection property="labelList" ofType="string">
+            <result column="label"></result>
+        </collection>
+    </resultMap>
+
+    <select id="page" resultMap="HouseInfoResponseMap">
+        select
+        (select name from user where user.deleted=0 and user.id=house_info.owner) owner,
+        (select name from user where user.deleted=0 and user.id=lease.tenant) tenant,
+        lease.rent leaseRent,
+        concat(address.fullname, house_info.detailed_address) address,
+        house_info.description description,
+        house_info.area area,
+        house_info.rent rent,
+        house_info.rented rented,
+        picture.name picture,
+        label.name label
+        from house_info
+        left join address on address.deleted=0 and address.code=house_info.address
+        left join lease on lease.deleted=0 and lease.house_info=house_info.id
+        left join picture2house_info on picture2house_info.deleted=0 and picture2house_info.house_info=house_info.id
+        left join picture on picture.deleted=0 and picture2house_info.picture=picture.id
+        left join label2house_info on label2house_info.deleted=0 and label2house_info.house_info=house_info.id
+        left join label on label.deleted=0 and label2house_info.label=label.id
+        where house_info.deleted=0
+        <if test="params.owner != null">
+            and house_info.owner = #{params.owner, jdbcType=VARCHAR }
+        </if>
+        <if test="params.tenant != null">
+            and lease.tenant = #{params.tenant, jdbcType=VARCHAR }
+        </if>
+    </select>
+
 </mapper>

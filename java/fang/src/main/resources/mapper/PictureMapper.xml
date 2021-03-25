@@ -11,5 +11,13 @@
         <result column="modified_time" property="modifiedTime" />
         <result column="deleted" property="deleted" />
     </resultMap>
+    <select id="selectListByHouseInfo" resultType="com.yinglongyhy.fang.entity.Picture">
+        select
+        picture.*
+        from picture
+        join picture2house_info
+        on picture2house_info.deleted=0 and picture2house_info.picture=picture.id and picture2house_info.house_info=#{houseInfoId}
+        where picture.deleted=0
+    </select>
 
 </mapper>

@@ -13,5 +13,17 @@
         <result column="modified_time" property="modifiedTime" />
         <result column="deleted" property="deleted" />
     </resultMap>
+    <update id="update">
+        update user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="user.name != null">
+                name = #{user.name},
+            </if>
+            <if test="user.password != null">
+                password = #{user.password},
+            </if>
+        </trim>
+        where phone_num = #{user.phoneNum}
+    </update>
 
 </mapper>

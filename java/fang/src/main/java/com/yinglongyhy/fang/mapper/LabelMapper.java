@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yinglongyhy.fang.entity.Label;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * <p>
  * 标签表 Mapper 接口
@@ -15,4 +17,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LabelMapper extends BaseMapper<Label> {
 
+    List<Label> selectListByHouseInfo(Long houseInfoId);
 }

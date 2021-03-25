@@ -3,11 +3,11 @@ package com.yinglongyhy.fang.rest;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yinglongyhy.fang.dto.HouseInfoDto;
-import com.yinglongyhy.fang.entity.HouseInfo;
-import com.yinglongyhy.fang.entity.User;
+import com.yinglongyhy.fang.dto.HouseInfoParamsDto;
+import com.yinglongyhy.fang.dto.HouseInfoResponseDto;
 import com.yinglongyhy.fang.service.IHouseInfoService;
-import com.yinglongyhy.fang.threadlocal.UserThreadLocal;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,11 +30,11 @@ public class HouseInfoRestController {
 
     @GetMapping("page")
     @ApiOperation(value = "分页查询", notes = "")
-    public Page<HouseInfo> page(
-            @RequestParam(value = "pageNumber", required = false, defaultValue = "1") Integer pageNumber
-          , @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
-        User user = UserThreadLocal.get();
-        return houseInfoService.page(new Page<>(pageNumber, pageSize));
+    public Page<HouseInfoResponseDto> page(
+            @ModelAttribute @ApiParam(value = "params") HouseInfoParamsDto params,
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "1") @ApiParam(value = "pageNumber") Integer pageNumber
+          , @RequestParam(value = "pageSize", required = false, defaultValue = "10") @ApiParam(value = "pageSize") Integer pageSize) {
+        return houseInfoService.page(params, pageNumber, pageSize);
     }
 
     @PostMapping("save")

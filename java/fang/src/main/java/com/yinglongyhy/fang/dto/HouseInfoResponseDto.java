@@ -7,16 +7,20 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@ApiModel(value = "HouseInfoDto")
-public class HouseInfoDto {
+@ApiModel(value = "HouseInfoResponseDto")
+public class HouseInfoResponseDto {
 
-    private Long id;
+    @ApiModelProperty(value = "")
+    private String owner;
+
+    @ApiModelProperty(value = "租客，关联user表")
+    private String tenant;
+
+    @ApiModelProperty(value = "协议租金，x元/月")
+    private Integer leaseRent;
 
     @ApiModelProperty(value = "区域地址，从address表中选")
     private String address;
-
-    @ApiModelProperty(value = "房屋的详细地址，作为区域地址的补充")
-    private String detailedAddress;
 
     @ApiModelProperty(value = "房屋的描述")
     private String description;
@@ -26,6 +30,9 @@ public class HouseInfoDto {
 
     @ApiModelProperty(value = "租金，x元/月")
     private Integer rent;
+
+    @ApiModelProperty(value = "出租标志，1：已出租，0：未出租")
+    private Integer rented;
 
     @ApiModelProperty(value = "房屋图片")
     private List<String> pictureList;

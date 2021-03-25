@@ -4,11 +4,19 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.yinglongyhy.fang.entity.Label">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <result column="create_time" property="createTime" />
-        <result column="modified_time" property="modifiedTime" />
-        <result column="deleted" property="deleted" />
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modified_time" property="modifiedTime"/>
+        <result column="deleted" property="deleted"/>
     </resultMap>
+    <select id="selectListByHouseInfo" resultType="com.yinglongyhy.fang.entity.Label">
+        select
+        label.*
+        from label
+        join label2house_info
+        on label2house_info.deleted=0 and label2house_info.label=label.id and label2house_info.house_info=#{houseInfoId}
+        where label.deleted=0
+    </select>
 
 </mapper>

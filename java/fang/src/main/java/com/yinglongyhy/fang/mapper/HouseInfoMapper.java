@@ -1,7 +1,11 @@
 package com.yinglongyhy.fang.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.yinglongyhy.fang.dto.HouseInfoParamsDto;
+import com.yinglongyhy.fang.dto.HouseInfoResponseDto;
 import com.yinglongyhy.fang.entity.HouseInfo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -15,4 +19,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HouseInfoMapper extends BaseMapper<HouseInfo> {
 
+    Page<HouseInfoResponseDto> page(Page<HouseInfoResponseDto> page, @Param(value = "params") HouseInfoParamsDto params);
 }

@@ -2,13 +2,14 @@ package com.yinglongyhy.fang.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableLogic;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -44,5 +45,8 @@ public class Label2houseInfo implements Serializable {
     @TableLogic
     private Integer deleted;
 
-
+    public Label2houseInfo(Long label, Long houseInfo) {
+        this.label = label;
+        this.houseInfo = houseInfo;
+    }
 }

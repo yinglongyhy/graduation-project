@@ -68,6 +68,18 @@ public class UserRestController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @PutMapping()
+    @ApiOperation(value = "", notes = "")
+    public ResponseEntity update(@RequestBody User user) {
+        User userThreadLocal = UserThreadLocal.get();
+        user.setPhoneNum(userThreadLocal.getPhoneNum());
+        if (StringUtils.isNotBlank(user.getPassword())) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }
+        userService.update(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @DeleteMapping("/logout")
     @ApiOperation(value = "退出登陆", notes = "退出登陆")
     public ResponseEntity<String> logout() {

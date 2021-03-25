@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yinglongyhy.fang.entity.Picture;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * <p>
  * 图片表 Mapper 接口
@@ -15,4 +17,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PictureMapper extends BaseMapper<Picture> {
 
+    List<Picture> selectListByHouseInfo(Long houseInfoId);
 }

@@ -1,6 +1,9 @@
 package com.yinglongyhy.fang.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yinglongyhy.fang.dto.HouseInfoDto;
+import com.yinglongyhy.fang.dto.HouseInfoParamsDto;
+import com.yinglongyhy.fang.dto.HouseInfoResponseDto;
 import com.yinglongyhy.fang.entity.HouseInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -15,4 +18,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IHouseInfoService extends IService<HouseInfo> {
 
     void save(HouseInfoDto houseInfoDto);
+
+    Page<HouseInfoResponseDto> page(HouseInfoParamsDto params, Integer pageNumber, Integer pageSize);
 }

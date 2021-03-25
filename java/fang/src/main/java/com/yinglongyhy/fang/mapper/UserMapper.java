@@ -2,6 +2,7 @@ package com.yinglongyhy.fang.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yinglongyhy.fang.entity.User;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -15,4 +16,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserMapper extends BaseMapper<User> {
 
+    /**
+     *
+     * @param user
+     */
+    void update(@Param("user") User user);
 }

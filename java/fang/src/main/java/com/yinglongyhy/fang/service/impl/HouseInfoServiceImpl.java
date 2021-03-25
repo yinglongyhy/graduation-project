@@ -1,19 +1,33 @@
 package com.yinglongyhy.fang.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yinglongyhy.fang.dto.HouseInfoDto;
-import com.yinglongyhy.fang.entity.HouseInfo;
-import com.yinglongyhy.fang.entity.Picture;
-import com.yinglongyhy.fang.exception.RestApiException;
+import com.yinglongyhy.fang.dto.HouseInfoParamsDto;
+import com.yinglongyhy.fang.dto.HouseInfoResponseDto;
+import com.yinglongyhy.fang.entity.*;
 import com.yinglongyhy.fang.mapper.HouseInfoMapper;
+import com.yinglongyhy.fang.mapper.LabelMapper;
 import com.yinglongyhy.fang.mapper.PictureMapper;
 import com.yinglongyhy.fang.service.IHouseInfoService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yinglongyhy.fang.service.ILabel2houseInfoService;
+import com.yinglongyhy.fang.service.ILabelService;
+import com.yinglongyhy.fang.service.IPicture2houseInfoService;
+import com.yinglongyhy.fang.threadlocal.UserThreadLocal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -28,17 +42,73 @@ import java.util.List;
 public class HouseInfoServiceImpl extends ServiceImpl<HouseInfoMapper, HouseInfo> implements IHouseInfoService {
     @Autowired
     private PictureMapper pictureMapper;
+    @Autowired
+    private HouseInfoMapper houseInfoMapper;
+    @Autowired
+    private LabelMapper labelMapper;
+    @Autowired
+    private IPicture2houseInfoService picture2houseInfoService;
+    @Autowired
+    private ILabelService labelService;
+    @Autowired
+    private ILabel2houseInfoService label2houseInfoService;
 
     @Override
     public void save(HouseInfoDto houseInfoDto) {
-        List<Picture> pictureList = pictureMapper.selectList(new QueryWrapper<Picture>().in("name", houseInfoDto.getPictureList()));
-        if (pictureList.size() != houseInfoDto.getPictureList().size()) {
-            log.warn("图片数量异常:{}", houseInfoDto);
-            throw new RestApiException("HouseInfoServiceImpl", "picture num error", "图片数量异常");
-        }
-        for (Picture picture : pictureList) {
 
-
+        if (Objects.isNull(houseInfoDto.getId())) {
+            HouseInfo houseInfo = new HouseInfo();
+            BeanUtils.copyProperties(houseInfoDto, houseInfo);
+            houseInfo.setOwner(UserThreadLocal.get().getId());
+            houseInfoMapper.insert(houseInfo);
+            BeanUtils.copyProperties(houseInfo, houseInfoDto);
         }
+
+        handlePicture(houseInfoDto);
+        handleLabel(houseInfoDto);
+
+    }
+
+    private void handleLabel(HouseInfoDto houseInfoDto) {
+        List<Label> labels = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(houseInfoDto.getLabelList())) {
+            for (String labelName : houseInfoDto.getLabelList()) {
+                labelService.saveOrUpdate(new Label(labelName), new UpdateWrapper<Label>().eq("name", labelName));
+                Label label = labelService.getOne(new QueryWrapper<Label>().eq("name", labelName));
+                labels.add(label);
+            }
+        }
+        Map<String, Label> labelMap = labels.stream().collect(Collectors.toMap(Label::getName, Function.identity()));
+        List<Label> labelList = labelMapper.selectListByHouseInfo(houseInfoDto.getId());
+        List<String> labelNameList = labelList.stream().map(Label::getName).collect(Collectors.toList());
+        if (Objects.isNull(houseInfoDto.getLabelList())) {
+            houseInfoDto.setLabelList(new ArrayList<>());
+        }
+        List<String> insertLabelNameList = houseInfoDto.getLabelList().stream().filter(name -> !labelNameList.contains(name)).collect(Collectors.toList());
+        List<String> deletedLabelNameList = labelNameList.stream().filter(name -> !houseInfoDto.getLabelList().contains(name)).collect(Collectors.toList());
+        List<Label> deletedLabelList = labelMapper.selectList(new QueryWrapper<Label>().in("name", deletedLabelNameList));
+
+        deletedLabelList.forEach(label -> label2houseInfoService.remove(new QueryWrapper<Label2houseInfo>().eq("label", label.getId()).eq("house_info", houseInfoDto.getId())));
+        insertLabelNameList.forEach(name -> picture2houseInfoService.save(new Picture2houseInfo(labelMap.get(name).getId(), houseInfoDto.getId())));
+        ;
+    }
+
+    private void handlePicture(HouseInfoDto houseInfoDto) {
+        if (CollectionUtils.isEmpty(houseInfoDto.getPictureList())) {
+            houseInfoDto.setPictureList(new ArrayList<>());
+        }
+        List<Picture> pictureList = pictureMapper.selectListByHouseInfo(houseInfoDto.getId());
+        List<String> pictureNameList = pictureList.stream().map(Picture::getName).collect(Collectors.toList());
+        List<String> deletedPictureNameList = pictureNameList.stream().filter(pictureName -> !houseInfoDto.getPictureList().contains(pictureName)).collect(Collectors.toList());
+        List<String> insertPictureNameList = houseInfoDto.getPictureList().stream().filter(pictureName -> !pictureNameList.contains(pictureName)).collect(Collectors.toList());
+        List<Picture> deletedPictureList = pictureMapper.selectList(new QueryWrapper<Picture>().in("name", deletedPictureNameList));
+        List<Picture> insertPictureList = pictureMapper.selectList(new QueryWrapper<Picture>().in("name", insertPictureNameList));
+        deletedPictureList.forEach(picture -> picture2houseInfoService.remove(new QueryWrapper<Picture2houseInfo>().eq("picture", picture.getId()).eq("house_info", houseInfoDto.getId())));
+        insertPictureList.forEach(picture -> picture2houseInfoService.save(new Picture2houseInfo(picture.getId(), houseInfoDto.getId())));
+    }
+
+    @Override
+    public Page<HouseInfoResponseDto> page(HouseInfoParamsDto params, Integer pageNumber, Integer pageSize) {
+        return houseInfoMapper.page(new Page<HouseInfoResponseDto>(pageNumber, pageSize), params);
     }
 }
