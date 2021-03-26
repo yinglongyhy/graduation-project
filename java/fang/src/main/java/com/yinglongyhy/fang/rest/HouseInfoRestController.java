@@ -30,11 +30,11 @@ public class HouseInfoRestController {
 
     @GetMapping("page")
     @ApiOperation(value = "分页查询", notes = "")
-    public Page<HouseInfoResponseDto> page(
+    public ResponseEntity<Page<HouseInfoResponseDto>> page(
             @ModelAttribute @ApiParam(value = "params") HouseInfoParamsDto params,
             @RequestParam(value = "pageNumber", required = false, defaultValue = "1") @ApiParam(value = "pageNumber") Integer pageNumber
           , @RequestParam(value = "pageSize", required = false, defaultValue = "10") @ApiParam(value = "pageSize") Integer pageSize) {
-        return houseInfoService.page(params, pageNumber, pageSize);
+        return new ResponseEntity<>(houseInfoService.page(params, pageNumber, pageSize), HttpStatus.OK);
     }
 
     @PostMapping("save")

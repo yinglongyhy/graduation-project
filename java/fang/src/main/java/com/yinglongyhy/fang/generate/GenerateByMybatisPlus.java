@@ -15,8 +15,8 @@ public class GenerateByMybatisPlus {
 
         GlobalConfig gc = new GlobalConfig();
         gc.setAuthor("yinglongyhy")
-                .setOutputDir(projectPath + "/src/main/java")
-//                .setOutputDir("/tmp")
+//                .setOutputDir(projectPath + "/src/main/java")
+                .setOutputDir("/tmp")
                 .setOpen(false)
                 .setSwagger2(true)
                 .setControllerName("%sRestController")

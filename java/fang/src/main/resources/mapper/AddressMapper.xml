@@ -12,5 +12,25 @@
         <result column="modified_time" property="modifiedTime" />
         <result column="deleted" property="deleted" />
     </resultMap>
+    <select id="page" resultType="com.yinglongyhy.fang.entity.Address">
+        select
+        *
+        from address
+        <where>
+        deleted = 0
+        <if test="param.id != null">
+            and id = #{param.id, jdbcType=INTEGER }
+        </if>
+        <if test="param.code != null">
+            and code like concat('%', #{param.code, jdbcType=VARCHAR }, '%')
+        </if>
+        <if test="param.name != null">
+             and name like concat('%', #{param.name, jdbcType=VARCHAR }, '%')
+        </if>
+        <if test="param.fullname != null">
+            and fullname like concat('%', #{param.fullname, jdbcType=VARCHAR }, '%')
+        </if>
+        </where>
+</select>
 
 </mapper>
