@@ -1,5 +1,6 @@
 package com.yinglongyhy.fang.dto;
 
+import com.yinglongyhy.fang.entity.Address;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,7 +11,10 @@ import java.util.List;
 @ApiModel(value = "HouseInfoResponseDto")
 public class HouseInfoResponseDto {
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "房屋id")
+    private Long id;
+
+    @ApiModelProperty(value = "所有者")
     private String owner;
 
     @ApiModelProperty(value = "租客，关联user表")
@@ -19,8 +23,11 @@ public class HouseInfoResponseDto {
     @ApiModelProperty(value = "协议租金，x元/月")
     private Integer leaseRent;
 
-    @ApiModelProperty(value = "区域地址，从address表中选")
-    private String address;
+    @ApiModelProperty(value = "地址")
+    private Address address;
+
+    @ApiModelProperty(value = "详细地址")
+    private String detailedAddress;
 
     @ApiModelProperty(value = "房屋的描述")
     private String description;

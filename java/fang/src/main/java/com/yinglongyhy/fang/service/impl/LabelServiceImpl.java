@@ -5,6 +5,7 @@ import com.yinglongyhy.fang.mapper.LabelMapper;
 import com.yinglongyhy.fang.service.ILabelService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
  * @since 2020-12-22
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class LabelServiceImpl extends ServiceImpl<LabelMapper, Label> implements ILabelService {
 
 }

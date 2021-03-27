@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <Header></Header>
-    <FangList></FangList>
+    <router-view/>
+    <!-- <FangList></FangList> -->
     <!-- <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
@@ -12,12 +13,10 @@
 
 <script>
 import Header from '@/components/Header.vue'
-import FangList from '@/views/FangList.vue'
 export default {
   name: 'App',
   components: {
-    Header,
-    FangList
+    Header
   }
 }
 </script>

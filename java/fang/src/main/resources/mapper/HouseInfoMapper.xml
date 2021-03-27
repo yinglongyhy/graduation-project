@@ -18,14 +18,21 @@
     </resultMap>
 
     <resultMap id="HouseInfoResponseMap" type="com.yinglongyhy.fang.dto.HouseInfoResponseDto">
+        <result column="id" property="id"></result>
         <result column="owner" property="owner"></result>
         <result column="tenant" property="tenant"></result>
         <result column="leaseRent" property="leaseRent"></result>
-        <result column="address" property="address"></result>
+        <result column="detailed_address" property="detailedAddress"></result>
         <result column="description" property="description"></result>
         <result column="area" property="area"></result>
         <result column="rent" property="rent"></result>
         <result column="rented" property="rented"></result>
+        <association property="address" javaType="com.yinglongyhy.fang.entity.Address">
+            <id column="a_id" property="id"></id>
+            <result column="a_code" property="code"></result>
+            <result column="a_name" property="name"></result>
+            <result column="a_fullname" property="fullname"></result>
+        </association>
         <!--
         property：填写POJO类中集合类型属性的名称
         -->
@@ -39,10 +46,15 @@
 
     <select id="page" resultMap="HouseInfoResponseMap">
         select
+        house_info.id id,
         (select name from user where user.deleted=0 and user.id=house_info.owner) owner,
         (select name from user where user.deleted=0 and user.id=lease.tenant) tenant,
+        address.id a_id,
+        address.code a_code,
+        address.name a_name,
+        address.fullname a_fullname,
         lease.rent leaseRent,
-        concat(address.fullname, house_info.detailed_address) address,
+        house_info.detailed_address detailed_address,
         house_info.description description,
         house_info.area area,
         house_info.rent rent,
@@ -62,6 +74,15 @@
         </if>
         <if test="params.tenant != null">
             and lease.tenant = #{params.tenant, jdbcType=VARCHAR }
+        </if>
+        <if test="params.rented != null">
+        and house_info.rented = #{params.rented, jdbcType=INTEGER }
+        </if>
+        <if test="params.rentMin != null">
+            and house_info.rent <![CDATA[ >= ]]> #{params.rentMin, jdbcType=INTEGER }
+        </if>
+        <if test="params.rentMax != null">
+            and house_info.rent <![CDATA[ <= ]]> #{params.rentMax, jdbcType=INTEGER }
         </if>
     </select>
 

@@ -5,6 +5,7 @@ import com.yinglongyhy.fang.mapper.Label2houseInfoMapper;
 import com.yinglongyhy.fang.service.ILabel2houseInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
  * @since 2021-03-24
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class Label2houseInfoServiceImpl extends ServiceImpl<Label2houseInfoMapper, Label2houseInfo> implements ILabel2houseInfoService {
 
 }

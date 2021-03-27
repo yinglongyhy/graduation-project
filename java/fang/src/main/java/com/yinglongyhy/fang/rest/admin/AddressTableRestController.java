@@ -32,8 +32,8 @@ public class AddressTableRestController {
     @ApiOperation(value = "", notes = "")
     public ResponseEntity<Page<Address>> page(
             @ModelAttribute @ApiParam(value = "params") AddressParamDto params,
-            @RequestParam(value = "pageNumber", required = false, defaultValue = "1") @ApiParam(value = "pageNumber") Integer pageNumber
-            , @RequestParam(value = "pageSize", required = false, defaultValue = "10") @ApiParam(value = "pageSize") Integer pageSize) {
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "1") @ApiParam(value = "pageNumber", defaultValue = "1") Integer pageNumber
+            , @RequestParam(value = "pageSize", required = false, defaultValue = "10") @ApiParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
         return new ResponseEntity<>(addressService.page(new Page<>(pageNumber, pageSize), params), HttpStatus.OK);
     }
 

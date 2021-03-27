@@ -1,14 +1,17 @@
 <template>
   <div class="form">
-    <header class="header">登录</header>
+    <header class="header">用户信息</header>
     <div class="contain">
       <el-form
         :label-position="labelPosition"
         label-width="60px"
         :model="formLabelAlign"
       >
-        <el-form-item label="账号">
+        <el-form-item label="用户名">
           <el-input v-model="formLabelAlign.name"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input v-model="formLabelAlign.phoneNum" disabled></el-input>
         </el-form-item>
         <el-form-item label="密码">
           <el-input v-model="formLabelAlign.password" show-password></el-input>
@@ -19,7 +22,7 @@
         </el-form-item> -->
         <el-form-item>
           <el-button-group>
-            <el-button @click="onSubmit" type="primary">登录</el-button>
+            <el-button @click="onSubmit" type="primary">确认</el-button>
             <router-link to="/">
               <el-button>取消</el-button>
             </router-link>
@@ -34,54 +37,48 @@
 import axios from "axios";
 
 export default {
-  name: "Login",
+  name: "UserInfo",
   data() {
     return {
       labelPosition: "left",
-      userToken: null,
-      userInfo: null,
       formLabelAlign: {
+        name: JSON.parse(window.localStorage.getItem('userInfo')).name,
+        phoneNum: JSON.parse(window.localStorage.getItem('userInfo')).phoneNum,
+        password: null,
+      },
+      userInfo: {
         id: null,
         name: null,
         phoneNum: null,
-        password: null,
-        role: null,
-      },
+        role: 'user'
+      }
     };
   },
   methods: {
     onSubmit() {
       console.log("submit");
-      this.formLabelAlign.phoneNum = this.formLabelAlign.name
-      this.formLabelAlign.role = 'user'
-
-      if (
-        this.formLabelAlign.name === null ||
-        this.formLabelAlign.password === null
-      ) {
-        alert("账号或密码不能为空");
+      if (this.formLabelAlign.name === JSON.parse(window.localStorage.getItem('userInfo')).name && this.formLabelAlign.password === null) {
+            this.$router.push("/");
       } else {
         console.log(this.formLabelAlign);
-        // 用户登录
+        // 用户修改
         axios
-          .post("/api/user/login", this.formLabelAlign, {headers:{'token': window.localStorage.getItem('token')}})
+          .put("/api/user", this.formLabelAlign, {
+            headers: { token: window.localStorage.getItem('token') },
+          })
           .then((res) => {
-            console.log(res);
-            this.userToken = res.headers.token;
-            this.userInfo = res.data;
-            console.log(this.userToken);
-            console.log(this.userInfo);
-
-            window.localStorage.setItem('token', this.userToken)
+            console.log(res)
+            this.userInfo.id = JSON.parse(window.localStorage.getItem('userInfo')).id;
+            this.userInfo.name = this.formLabelAlign.name;
+            this.userInfo.phoneNum = this.formLabelAlign.phoneNum;
             window.localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
-
             // 将用户token保存到vuex中, 并设置跳转  yinglongyhy
             // this.changeLogin({ Authorization: _this.userToken })
-            // this.$router.push("/");
-            window.location.href = "/";
+            this.$router.push("/");
+
           })
           .catch((error) => {
-            alert("账号或密码错误");
+            alert("修改失败");
             console.log(error);
           });
       }

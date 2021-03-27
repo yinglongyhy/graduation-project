@@ -1,4 +1,4 @@
-package com.yinglongyhy.fang;
+package com.yinglongyhy.fang.util;
 
 import org.springframework.web.multipart.MultipartFile;
 

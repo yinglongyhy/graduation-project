@@ -8,9 +8,12 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class NameAuthenticationProvider implements AuthenticationProvider {
@@ -33,6 +36,9 @@ public class NameAuthenticationProvider implements AuthenticationProvider {
         // 验证密码
         if (!isValid) {
             throw new BadCredentialsException("密码错误！");
+        }
+        if (!((List<GrantedAuthority>) authentication.getAuthorities()).get(0).getAuthority().equals(userInfo.getCurrentUserInfo().getRole())) {
+            throw new BadCredentialsException("用户名或密码错误！");
         }
 
         // 前后端分离情况下 处理逻辑...

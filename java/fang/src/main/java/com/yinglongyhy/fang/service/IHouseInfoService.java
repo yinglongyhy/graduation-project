@@ -20,4 +20,6 @@ public interface IHouseInfoService extends IService<HouseInfo> {
     void save(HouseInfoDto houseInfoDto);
 
     Page<HouseInfoResponseDto> page(HouseInfoParamsDto params, Integer pageNumber, Integer pageSize);
+
+    void delete(Long id);
 }

@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class HouseInfoServiceImpl extends ServiceImpl<HouseInfoMapper, HouseInfo> implements IHouseInfoService {
     @Autowired
     private PictureMapper pictureMapper;
@@ -86,11 +88,11 @@ public class HouseInfoServiceImpl extends ServiceImpl<HouseInfoMapper, HouseInfo
         }
         List<String> insertLabelNameList = houseInfoDto.getLabelList().stream().filter(name -> !labelNameList.contains(name)).collect(Collectors.toList());
         List<String> deletedLabelNameList = labelNameList.stream().filter(name -> !houseInfoDto.getLabelList().contains(name)).collect(Collectors.toList());
-        List<Label> deletedLabelList = labelMapper.selectList(new QueryWrapper<Label>().in("name", deletedLabelNameList));
-
-        deletedLabelList.forEach(label -> label2houseInfoService.remove(new QueryWrapper<Label2houseInfo>().eq("label", label.getId()).eq("house_info", houseInfoDto.getId())));
-        insertLabelNameList.forEach(name -> picture2houseInfoService.save(new Picture2houseInfo(labelMap.get(name).getId(), houseInfoDto.getId())));
-        ;
+        if (!CollectionUtils.isEmpty(deletedLabelNameList)) {
+            List<Label> deletedLabelList = labelMapper.selectList(new QueryWrapper<Label>().in("name", deletedLabelNameList));
+            deletedLabelList.forEach(label -> label2houseInfoService.remove(new QueryWrapper<Label2houseInfo>().eq("label", label.getId()).eq("house_info", houseInfoDto.getId())));
+        }
+        insertLabelNameList.forEach(name -> label2houseInfoService.save(new Label2houseInfo(labelMap.get(name).getId(), houseInfoDto.getId())));
     }
 
     private void handlePicture(HouseInfoDto houseInfoDto) {
@@ -101,14 +103,26 @@ public class HouseInfoServiceImpl extends ServiceImpl<HouseInfoMapper, HouseInfo
         List<String> pictureNameList = pictureList.stream().map(Picture::getName).collect(Collectors.toList());
         List<String> deletedPictureNameList = pictureNameList.stream().filter(pictureName -> !houseInfoDto.getPictureList().contains(pictureName)).collect(Collectors.toList());
         List<String> insertPictureNameList = houseInfoDto.getPictureList().stream().filter(pictureName -> !pictureNameList.contains(pictureName)).collect(Collectors.toList());
-        List<Picture> deletedPictureList = pictureMapper.selectList(new QueryWrapper<Picture>().in("name", deletedPictureNameList));
-        List<Picture> insertPictureList = pictureMapper.selectList(new QueryWrapper<Picture>().in("name", insertPictureNameList));
-        deletedPictureList.forEach(picture -> picture2houseInfoService.remove(new QueryWrapper<Picture2houseInfo>().eq("picture", picture.getId()).eq("house_info", houseInfoDto.getId())));
-        insertPictureList.forEach(picture -> picture2houseInfoService.save(new Picture2houseInfo(picture.getId(), houseInfoDto.getId())));
+        if (!CollectionUtils.isEmpty(deletedPictureNameList)) {
+            List<Picture> deletedPictureList = pictureMapper.selectList(new QueryWrapper<Picture>().in("name", deletedPictureNameList));
+            deletedPictureList.forEach(picture -> picture2houseInfoService.remove(new QueryWrapper<Picture2houseInfo>().eq("picture", picture.getId()).eq("house_info", houseInfoDto.getId())));
+        }
+        if (!CollectionUtils.isEmpty(insertPictureNameList)) {
+            List<Picture> insertPictureList = pictureMapper.selectList(new QueryWrapper<Picture>().in("name", insertPictureNameList));
+            insertPictureList.forEach(picture -> picture2houseInfoService.save(new Picture2houseInfo(picture.getId(), houseInfoDto.getId())));
+
+        }
     }
 
     @Override
     public Page<HouseInfoResponseDto> page(HouseInfoParamsDto params, Integer pageNumber, Integer pageSize) {
         return houseInfoMapper.page(new Page<HouseInfoResponseDto>(pageNumber, pageSize), params);
+    }
+
+    @Override
+    public void delete(Long id) {
+        label2houseInfoService.remove(new QueryWrapper<Label2houseInfo>().eq("house_info", id));
+        picture2houseInfoService.remove(new QueryWrapper<Picture2houseInfo>().eq("house_info", id));
+        removeById(id);
     }
 }

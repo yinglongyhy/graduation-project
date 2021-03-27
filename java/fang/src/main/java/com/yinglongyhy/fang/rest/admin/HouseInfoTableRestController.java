@@ -31,8 +31,8 @@ public class HouseInfoTableRestController {
     @ApiOperation(value = "", notes = "")
     public ResponseEntity<Page<HouseInfo>> page(
             @ModelAttribute @ApiParam(value = "params") HouseInfo params,
-            @RequestParam(value = "pageNumber", required = false, defaultValue = "1") @ApiParam(value = "pageNumber") Integer pageNumber
-            , @RequestParam(value = "pageSize", required = false, defaultValue = "10") @ApiParam(value = "pageSize") Integer pageSize) {
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "1") @ApiParam(value = "pageNumber", defaultValue = "1") Integer pageNumber
+            , @RequestParam(value = "pageSize", required = false, defaultValue = "10") @ApiParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
         return new ResponseEntity<>(houseInfoService.page(new Page<>(pageNumber, pageSize), new QueryWrapper<>(params)), HttpStatus.OK);
     }
 

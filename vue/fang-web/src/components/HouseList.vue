@@ -3,29 +3,34 @@
   <div id="houseList" class="houseList">
     <dl v-for="item in items" :key="item.id" class="list">
       <dt class="img rel floatl">
-        <a target="_blank" :href="item.detailUrl">
-          <img :src="item.img" />
+        <a target="_blank" @click="detail(item)">
+          <img
+            v-if="item.pictureList.length > 0"
+            :src="'http://localhost:8080/images/' + item.pictureList[0]"
+          />
         </a>
       </dt>
       <dd class="info rel">
         <p class="title">
-          <a :href="item.detailUrl" target="_blank" :title="item.titleText">{{
-            item.titleText
+          <a @click="detail(item)" target="_blank" :title="item.description">{{
+            item.description
           }}</a>
         </p>
         <p class="font15 mt12 bold">
-          <span v-for="(lable, index) in item.lables" :key="lable">
-            {{ (index === item.lables.length - 1 && lable) || lable + " | " }}
+          <span v-for="(lable, index) in item.labelList" :key="lable">
+            {{
+              (index === item.labelList.length - 1 && lable) || lable + " | "
+            }}
           </span>
         </p>
         <p class="gray6 mt12">
-          {{ item.address }}
+          {{ item.address.fullname + item.detailedAddress }}
         </p>
         <p class="gray6 mt15" style="line-height: 16px"></p>
         <p class="mt12"></p>
         <div class="moreInfo">
           <p class="mt5 alingC">
-            <span class="price">{{ item.price }}</span
+            <span class="price">{{ item.rent }}</span
             >元/月
           </p>
         </div>
@@ -45,7 +50,16 @@ export default {
       splitline: '<span class="splitline">|</span>',
     };
   },
-  methods: {},
+  methods: {
+    detail(item) {
+      this.$router.push({
+        name: "HouseInfo",
+        params: {
+          row: item,
+        },
+      });
+    },
+  },
 };
 </script>
 

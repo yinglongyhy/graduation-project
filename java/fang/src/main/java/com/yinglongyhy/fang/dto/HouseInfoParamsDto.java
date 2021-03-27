@@ -12,4 +12,13 @@ public class HouseInfoParamsDto {
 
     @ApiModelProperty(value = "租客，关联user表")
     private String tenant;
+
+    @ApiModelProperty(value = "租金-最低")
+    private Integer rentMin;
+
+    @ApiModelProperty(value = "租金-最高")
+    private Integer rentMax;
+
+    @ApiModelProperty(value = "出租标志，1：已出租，0：未出租")
+    private Integer rented;
 }

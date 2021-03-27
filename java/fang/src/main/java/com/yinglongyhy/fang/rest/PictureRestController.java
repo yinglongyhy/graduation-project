@@ -1,7 +1,7 @@
 package com.yinglongyhy.fang.rest;
 
 
-import com.yinglongyhy.fang.FileUtil;
+import com.yinglongyhy.fang.util.FileUtil;
 import com.yinglongyhy.fang.entity.Picture;
 import com.yinglongyhy.fang.service.IPictureService;
 import io.swagger.annotations.ApiOperation;
@@ -45,4 +45,14 @@ public class PictureRestController {
         pictureService.save(new Picture(newFileName, file.getOriginalFilename()));
         return new ResponseEntity<>(newFileName, HttpStatus.OK);
     }
+
+//    @PostMapping("upload")
+//    @ApiOperation(value = "上传图片接口", notes = "上传图片接口，返回新的图片名称")
+//    public ResponseEntity<String> upload(Object file) {
+////        String newFileName = FileUtil.upload(file, path, file.getOriginalFilename());
+////
+////        pictureService.save(new Picture(newFileName, file.getOriginalFilename()));
+////        return new ResponseEntity<>(newFileName, HttpStatus.OK);
+//        return new ResponseEntity<>("aaa", HttpStatus.OK);
+//    }
 }
