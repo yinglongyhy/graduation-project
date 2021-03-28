@@ -80,6 +80,17 @@ public class UserRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping()
+    @ApiOperation(value = "获取用户信息", notes = "")
+    public ResponseEntity<User> info() {
+        User user = UserThreadLocal.get();
+        if (Objects.isNull(user)) {
+            log.warn("用户信息不存在");
+            throw new RestApiException("UserRestController", "user not found", "用户信息不存在");
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
     @DeleteMapping("/logout")
     @ApiOperation(value = "退出登陆", notes = "退出登陆")
     public ResponseEntity<String> logout() {
