@@ -20,4 +20,6 @@ import org.springframework.stereotype.Repository;
 public interface HouseInfoMapper extends BaseMapper<HouseInfo> {
 
     Page<HouseInfoResponseDto> page(Page<HouseInfoResponseDto> page, @Param(value = "params") HouseInfoParamsDto params);
+
+    HouseInfoResponseDto getOneById(Long id);
 }

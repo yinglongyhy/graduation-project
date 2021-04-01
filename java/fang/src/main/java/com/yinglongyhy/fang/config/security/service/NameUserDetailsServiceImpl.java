@@ -28,7 +28,7 @@ public class NameUserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 从数据库中取出用户信息
 
-        List<User> userList = userMapper.selectList(new QueryWrapper<User>().eq("name", username));
+        List<User> userList = userMapper.selectList(new QueryWrapper<User>().eq("name", username).or().eq("phone_num", username));
         User user;
         // 判断用户是否存在
         if (!CollectionUtils.isEmpty(userList)){

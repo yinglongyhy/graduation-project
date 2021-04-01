@@ -8,6 +8,7 @@
         <result column="tenant" property="tenant" />
         <result column="house_info" property="houseInfo" />
         <result column="rent" property="rent" />
+        <result column="lease_key" property="leaseKey" />
         <result column="create_time" property="createTime" />
         <result column="modified_time" property="modifiedTime" />
         <result column="deleted" property="deleted" />

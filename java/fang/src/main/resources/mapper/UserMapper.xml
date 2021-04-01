@@ -9,6 +9,7 @@
         <result column="phone_num" property="phoneNum" />
         <result column="password" property="password" />
         <result column="role" property="role" />
+        <result column="lease_key" property="leaseKey" />
         <result column="create_time" property="createTime" />
         <result column="modified_time" property="modifiedTime" />
         <result column="deleted" property="deleted" />

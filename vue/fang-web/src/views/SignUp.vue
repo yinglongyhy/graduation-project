@@ -1,25 +1,24 @@
 <template>
   <div class="form">
-    <header class="header">登录</header>
+    <header class="header">注册</header>
     <div class="contain">
       <el-form
         :label-position="labelPosition"
         label-width="60px"
         :model="formLabelAlign"
       >
-        <el-form-item label="账号">
+        <el-form-item label="用户名">
           <el-input v-model="formLabelAlign.name"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input v-model="formLabelAlign.phoneNum"></el-input>
         </el-form-item>
         <el-form-item label="密码">
           <el-input v-model="formLabelAlign.password" show-password></el-input>
         </el-form-item>
-        <!-- <el-form-item>
-          <el-radio v-model="radio" label="1">用户</el-radio>
-          <el-radio v-model="radio" label="2" @click="handleClick">管理员</el-radio>
-        </el-form-item> -->
         <el-form-item>
           <el-button-group>
-            <el-button @click="onSubmit" type="primary">登录</el-button>
+            <el-button @click="onSubmit" type="primary">注册</el-button>
             <router-link to="/">
               <el-button>取消</el-button>
             </router-link>
@@ -34,7 +33,7 @@
 import axios from "axios";
 
 export default {
-  name: "Login",
+  name: "SignUp",
   data() {
     return {
       labelPosition: "left",
@@ -56,31 +55,21 @@ export default {
 
       if (
         this.formLabelAlign.name === null ||
+        this.formLabelAlign.phoneNum === null ||
         this.formLabelAlign.password === null
       ) {
-        alert("账号或密码不能为空");
+        alert("账号、手机号或密码不能为空");
       } else {
         console.log(this.formLabelAlign);
         // 用户登录
         axios
-          .post("/api/user/login", this.formLabelAlign, {headers:{'token': window.localStorage.getItem('token')}})
+          .post("/api/user", this.formLabelAlign)
           .then((res) => {
             console.log(res);
-            this.userToken = res.headers.token;
-            this.userInfo = res.data;
-            console.log(this.userToken);
-            console.log(this.userInfo);
-
-            window.localStorage.setItem('token', this.userToken)
-            window.localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
-
-            // 将用户token保存到vuex中, 并设置跳转  yinglongyhy
-            // this.changeLogin({ Authorization: _this.userToken })
-            // this.$router.push("/");
             window.location.href = "/";
           })
           .catch((error) => {
-            alert("账号或密码错误");
+            alert("用户名或手机号已存在，注册失败");
             console.log(error);
           });
       }

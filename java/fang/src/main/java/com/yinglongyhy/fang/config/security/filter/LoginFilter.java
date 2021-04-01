@@ -80,6 +80,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         o.put("name", user.getName());
         o.put("phoneNum", user.getPhoneNum());
         o.put("role", user.getRole());
+        o.put("leaseKey", user.getLeaseKey());
         writer.write(o.toString());
     }
 }

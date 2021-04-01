@@ -140,7 +140,7 @@ export default {
         var name = row.pictureList[i];
         this.formLabelAlign.pictureList.push({
           name: name,
-          url: "http://localhost:8080/images/" + name,
+          url: name,
         });
       }
     },

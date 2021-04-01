@@ -46,6 +46,12 @@ public class HouseInfoRestController {
         return new ResponseEntity<>(houseInfoService.page(params, pageNumber, pageSize), HttpStatus.OK);
     }
 
+    @GetMapping("{id}")
+    @ApiOperation(value = "单个查询", notes = "")
+    public ResponseEntity<HouseInfoResponseDto> getByid(@PathVariable @ApiParam(value = "params") Long id) {
+        return new ResponseEntity<>(houseInfoService.getOneById(id), HttpStatus.OK);
+    }
+
     @PostMapping("save")
     @ApiOperation(value = "保存房屋信息", notes = "保存房屋信息，新增或修改")
     public ResponseEntity save(@RequestBody HouseInfoDto houseInfoDto) {

@@ -40,6 +40,9 @@ public class Lease implements Serializable {
     @ApiModelProperty(value = "租金，x元/月")
     private Integer rent;
 
+    @ApiModelProperty(value = "租房密钥，房东用租户的密钥创建租约")
+    private String leaseKey;
+
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
 
@@ -50,9 +53,10 @@ public class Lease implements Serializable {
     @TableLogic
     private Integer deleted;
 
-    public Lease(Long tenant, Long houseInfo, Integer rent) {
+    public Lease(Long tenant, Long houseInfo, Integer rent, String leaseKey) {
         this.tenant = tenant;
         this.houseInfo = houseInfo;
         this.rent = rent;
+        this.leaseKey = leaseKey;
     }
 }

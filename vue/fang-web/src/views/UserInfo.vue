@@ -4,7 +4,7 @@
     <div class="contain">
       <el-form
         :label-position="labelPosition"
-        label-width="60px"
+        label-width="80px"
         :model="formLabelAlign"
       >
         <el-form-item label="用户名">
@@ -12,6 +12,9 @@
         </el-form-item>
         <el-form-item label="手机号">
           <el-input v-model="formLabelAlign.phoneNum" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="租约密钥">
+          <el-input v-model="formLabelAlign.leaseKey" disabled></el-input>
         </el-form-item>
         <el-form-item label="密码">
           <el-input v-model="formLabelAlign.password" show-password></el-input>
@@ -44,6 +47,7 @@ export default {
       formLabelAlign: {
         name: JSON.parse(window.localStorage.getItem('userInfo')).name,
         phoneNum: JSON.parse(window.localStorage.getItem('userInfo')).phoneNum,
+        leaseKey: JSON.parse(window.localStorage.getItem('userInfo')).leaseKey,
         password: null,
       },
       userInfo: {

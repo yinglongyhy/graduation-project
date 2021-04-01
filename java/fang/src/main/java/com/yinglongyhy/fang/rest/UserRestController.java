@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * <p>
@@ -57,6 +58,7 @@ public class UserRestController {
         if (Objects.isNull(userThreadLocal) && StringUtils.isBlank(user.getRole())) {
             user.setRole(RoleEnum.USER.toString());
         }
+        user.setLeaseKey(UUID.randomUUID().toString());
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         boolean save = userService.save(user);
         if (!save) {

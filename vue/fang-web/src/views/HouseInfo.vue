@@ -53,7 +53,7 @@
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 
 export default {
   name: "HouseInfo",
@@ -82,27 +82,42 @@ export default {
   },
   created() {
     if (this.$route.params.row !== null) {
-      this.init(this.$route.params.row);
+      this.init(this.$route.params.id);
     }
   },
   methods: {
-    init(row) {
-      this.formLabelAlign.id = row.id;
-      this.formLabelAlign.description = row.description;
-      this.addressOptions.push(row.address);
-      this.formLabelAlign.detailedAddress = row.detailedAddress;
-      this.formLabelAlign.address = row.address;
-      this.formLabelAlign.area = row.area;
-      this.formLabelAlign.rent = row.rent;
-      this.formLabelAlign.labelList = row.labelList;
-      for (var i = 0; i < row.pictureList.length; i++) {
-        var name = row.pictureList[i];
-        this.formLabelAlign.pictureList.push({
-          id: i,
-          name: name,
-          url: "http://localhost:8080/images/" + name,
+    init(id) {
+      axios
+        .get(
+          "/api/houseInfo/" +
+            id,
+          {
+            headers: { token: window.localStorage.getItem("token") },
+          }
+        )
+        .then((res) => {
+          console.log(res);
+          var row = res.data;
+          this.formLabelAlign.id = row.id;
+          this.formLabelAlign.description = row.description;
+          this.addressOptions.push(row.address);
+          this.formLabelAlign.detailedAddress = row.detailedAddress;
+          this.formLabelAlign.address = row.address;
+          this.formLabelAlign.area = row.area;
+          this.formLabelAlign.rent = row.rent;
+          this.formLabelAlign.labelList = row.labelList;
+          for (var i = 0; i < row.pictureList.length; i++) {
+            var name = row.pictureList[i];
+            this.formLabelAlign.pictureList.push({
+              id: i,
+              name: name,
+              url: "http://localhost:8080/images/" + name,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
         });
-      }
     },
   },
 };

@@ -17,8 +17,14 @@ public class HouseInfoResponseDto {
     @ApiModelProperty(value = "所有者")
     private String owner;
 
-    @ApiModelProperty(value = "租客，关联user表")
+    @ApiModelProperty(value = "租约id")
+    private Long leaseId;
+
+    @ApiModelProperty(value = "租客")
     private String tenant;
+
+    @ApiModelProperty(value = "租客租房密钥")
+    private String leaseKey;
 
     @ApiModelProperty(value = "协议租金，x元/月")
     private Integer leaseRent;

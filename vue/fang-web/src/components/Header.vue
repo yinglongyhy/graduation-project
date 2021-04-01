@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="header">
     <el-menu
       :default-active="this.$route.path"
       class="el-menu-demo"
@@ -8,6 +8,8 @@
       router="true"
     >
       <el-menu-item index="/" style="float: left">首页</el-menu-item>
+      <el-menu-item index="/signUp" v-if="token === null" style="float: right"
+        >注册</el-menu-item>
       <el-menu-item index="/login" v-if="token === null" style="float: right"
         >登陆</el-menu-item
       >
@@ -48,4 +50,8 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped></style>
+<style lang="stylus" scoped>
+.header {
+  margin-bottom: 20px;
+}
+</style>

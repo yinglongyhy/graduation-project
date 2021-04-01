@@ -116,7 +116,13 @@ public class HouseInfoServiceImpl extends ServiceImpl<HouseInfoMapper, HouseInfo
 
     @Override
     public Page<HouseInfoResponseDto> page(HouseInfoParamsDto params, Integer pageNumber, Integer pageSize) {
-        return houseInfoMapper.page(new Page<HouseInfoResponseDto>(pageNumber, pageSize), params);
+        Page<HouseInfoResponseDto> houseInfoResponseDtoPage = houseInfoMapper.page(new Page<HouseInfoResponseDto>(pageNumber, pageSize), params);
+        for (HouseInfoResponseDto record : houseInfoResponseDtoPage.getRecords()) {
+            record.setPictureList(pictureMapper.selectListByHouseInfo(record.getId()).stream().map(Picture::getName).collect(Collectors.toList()));
+            record.setLabelList(labelMapper.selectListByHouseInfo(record.getId()).stream().map(Label::getName).collect(Collectors.toList()));
+        }
+
+        return houseInfoResponseDtoPage;
     }
 
     @Override
@@ -124,5 +130,13 @@ public class HouseInfoServiceImpl extends ServiceImpl<HouseInfoMapper, HouseInfo
         label2houseInfoService.remove(new QueryWrapper<Label2houseInfo>().eq("house_info", id));
         picture2houseInfoService.remove(new QueryWrapper<Picture2houseInfo>().eq("house_info", id));
         removeById(id);
+    }
+
+    @Override
+    public HouseInfoResponseDto getOneById(Long id) {
+        HouseInfoResponseDto houseInfoResponseDto = houseInfoMapper.getOneById(id);
+        houseInfoResponseDto.setPictureList(pictureMapper.selectListByHouseInfo(houseInfoResponseDto.getId()).stream().map(Picture::getName).collect(Collectors.toList()));
+        houseInfoResponseDto.setLabelList(labelMapper.selectListByHouseInfo(houseInfoResponseDto.getId()).stream().map(Label::getName).collect(Collectors.toList()));
+        return houseInfoResponseDto;
     }
 }

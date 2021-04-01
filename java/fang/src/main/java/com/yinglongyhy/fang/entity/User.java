@@ -43,6 +43,9 @@ public class User implements Serializable {
     @ApiModelProperty(value = "角色，'admin'：管理员，'user'：用户")
     private String role;
 
+    @ApiModelProperty(value = "租房密钥，房东用租户的密钥创建租约")
+    private String leaseKey;
+
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
 

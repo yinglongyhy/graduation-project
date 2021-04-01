@@ -4,23 +4,25 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.yinglongyhy.fang.entity.HouseInfo">
-        <id column="id" property="id" />
-        <result column="owner" property="owner" />
-        <result column="address" property="address" />
-        <result column="detailed_address" property="detailedAddress" />
-        <result column="description" property="description" />
-        <result column="area" property="area" />
-        <result column="rent" property="rent" />
-        <result column="rented" property="rented" />
-        <result column="create_time" property="createTime" />
-        <result column="modified_time" property="modifiedTime" />
-        <result column="deleted" property="deleted" />
+        <id column="id" property="id"/>
+        <result column="owner" property="owner"/>
+        <result column="address" property="address"/>
+        <result column="detailed_address" property="detailedAddress"/>
+        <result column="description" property="description"/>
+        <result column="area" property="area"/>
+        <result column="rent" property="rent"/>
+        <result column="rented" property="rented"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modified_time" property="modifiedTime"/>
+        <result column="deleted" property="deleted"/>
     </resultMap>
 
     <resultMap id="HouseInfoResponseMap" type="com.yinglongyhy.fang.dto.HouseInfoResponseDto">
         <result column="id" property="id"></result>
         <result column="owner" property="owner"></result>
+        <result column="leaseId" property="leaseId"></result>
         <result column="tenant" property="tenant"></result>
+        <result column="leaseKey" property="leaseKey"></result>
         <result column="leaseRent" property="leaseRent"></result>
         <result column="detailed_address" property="detailedAddress"></result>
         <result column="description" property="description"></result>
@@ -33,18 +35,47 @@
             <result column="a_name" property="name"></result>
             <result column="a_fullname" property="fullname"></result>
         </association>
-        <!--
-        property：填写POJO类中集合类型属性的名称
-        -->
-        <collection property="pictureList" ofType="string">
-            <result column="picture"></result>
-        </collection>
-        <collection property="labelList" ofType="string">
-            <result column="label"></result>
-        </collection>
     </resultMap>
 
     <select id="page" resultMap="HouseInfoResponseMap">
+        select
+        house_info.id id,
+        (select name from user where user.deleted=0 and user.id=house_info.owner) owner,
+        (select name from user where user.deleted=0 and user.id=lease.tenant) tenant,
+        lease.id leaseId,
+        lease.lease_key leaseKey,
+        address.id a_id,
+        address.code a_code,
+        address.name a_name,
+        address.fullname a_fullname,
+        lease.rent leaseRent,
+        house_info.detailed_address detailed_address,
+        house_info.description description,
+        house_info.area area,
+        house_info.rent rent,
+        house_info.rented rented
+        from house_info
+        left join address on address.deleted=0 and address.code=house_info.address
+        left join lease on lease.deleted=0 and lease.house_info=house_info.id
+        where house_info.deleted=0
+        <if test="params.owner != null">
+            and house_info.owner = #{params.owner, jdbcType=VARCHAR }
+        </if>
+        <if test="params.tenant != null">
+            and lease.tenant = #{params.tenant, jdbcType=VARCHAR }
+        </if>
+        <if test="params.rented != null">
+            and house_info.rented = #{params.rented, jdbcType=INTEGER }
+        </if>
+        <if test="params.rentMin != null">
+            and house_info.rent <![CDATA[ >= ]]> #{params.rentMin, jdbcType=INTEGER }
+        </if>
+        <if test="params.rentMax != null">
+            and house_info.rent <![CDATA[ <= ]]> #{params.rentMax, jdbcType=INTEGER }
+        </if>
+    </select>
+
+    <select id="getOneById" resultMap="HouseInfoResponseMap">
         select
         house_info.id id,
         (select name from user where user.deleted=0 and user.id=house_info.owner) owner,
@@ -58,32 +89,12 @@
         house_info.description description,
         house_info.area area,
         house_info.rent rent,
-        house_info.rented rented,
-        picture.name picture,
-        label.name label
+        house_info.rented rented
         from house_info
         left join address on address.deleted=0 and address.code=house_info.address
         left join lease on lease.deleted=0 and lease.house_info=house_info.id
-        left join picture2house_info on picture2house_info.deleted=0 and picture2house_info.house_info=house_info.id
-        left join picture on picture.deleted=0 and picture2house_info.picture=picture.id
-        left join label2house_info on label2house_info.deleted=0 and label2house_info.house_info=house_info.id
-        left join label on label.deleted=0 and label2house_info.label=label.id
         where house_info.deleted=0
-        <if test="params.owner != null">
-            and house_info.owner = #{params.owner, jdbcType=VARCHAR }
-        </if>
-        <if test="params.tenant != null">
-            and lease.tenant = #{params.tenant, jdbcType=VARCHAR }
-        </if>
-        <if test="params.rented != null">
-        and house_info.rented = #{params.rented, jdbcType=INTEGER }
-        </if>
-        <if test="params.rentMin != null">
-            and house_info.rent <![CDATA[ >= ]]> #{params.rentMin, jdbcType=INTEGER }
-        </if>
-        <if test="params.rentMax != null">
-            and house_info.rent <![CDATA[ <= ]]> #{params.rentMax, jdbcType=INTEGER }
-        </if>
+        and house_info.id = #{id}
     </select>
 
 </mapper>

@@ -22,4 +22,6 @@ public interface IHouseInfoService extends IService<HouseInfo> {
     Page<HouseInfoResponseDto> page(HouseInfoParamsDto params, Integer pageNumber, Integer pageSize);
 
     void delete(Long id);
+
+    HouseInfoResponseDto getOneById(Long id);
 }

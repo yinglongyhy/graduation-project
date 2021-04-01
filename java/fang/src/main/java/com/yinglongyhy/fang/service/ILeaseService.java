@@ -1,5 +1,6 @@
 package com.yinglongyhy.fang.service;
 
+import com.yinglongyhy.fang.dto.LeaseAddRequestDto;
 import com.yinglongyhy.fang.entity.Lease;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ILeaseService extends IService<Lease> {
 
+    Lease add(LeaseAddRequestDto leaseAddRequestDto);
+
+    void delete(Long id);
 }
