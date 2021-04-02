@@ -116,6 +116,10 @@ public class HouseInfoServiceImpl extends ServiceImpl<HouseInfoMapper, HouseInfo
 
     @Override
     public Page<HouseInfoResponseDto> page(HouseInfoParamsDto params, Integer pageNumber, Integer pageSize) {
+        if (Objects.isNull(params.getRentType())) {
+            params.setRentType(0);
+        }
+        params.setRentType(params.getRentType() != 1 ? 0 : 1);
         Page<HouseInfoResponseDto> houseInfoResponseDtoPage = houseInfoMapper.page(new Page<HouseInfoResponseDto>(pageNumber, pageSize), params);
         for (HouseInfoResponseDto record : houseInfoResponseDtoPage.getRecords()) {
             record.setPictureList(pictureMapper.selectListByHouseInfo(record.getId()).stream().map(Picture::getName).collect(Collectors.toList()));

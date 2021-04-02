@@ -61,6 +61,9 @@
         <if test="params.owner != null">
             and house_info.owner = #{params.owner, jdbcType=VARCHAR }
         </if>
+        <if test="params.address != null">
+            and house_info.address like concat(#{params.address, jdbcType=VARCHAR }, '%')
+        </if>
         <if test="params.tenant != null">
             and lease.tenant = #{params.tenant, jdbcType=VARCHAR }
         </if>
@@ -68,10 +71,20 @@
             and house_info.rented = #{params.rented, jdbcType=INTEGER }
         </if>
         <if test="params.rentMin != null">
-            and house_info.rent <![CDATA[ >= ]]> #{params.rentMin, jdbcType=INTEGER }
+          <if test="params.rentType == 0">
+              and house_info.rent <![CDATA[ >= ]]> #{params.rentMin, jdbcType=INTEGER }
+          </if>
+          <if test="params.rentType != 0">
+              and lease.rent <![CDATA[ >= ]]> #{params.rentMin, jdbcType=INTEGER }
+          </if>
         </if>
         <if test="params.rentMax != null">
-            and house_info.rent <![CDATA[ <= ]]> #{params.rentMax, jdbcType=INTEGER }
+          <if test="params.rentType == 0">
+              and house_info.rent <![CDATA[ <= ]]> #{params.rentMax, jdbcType=INTEGER }
+          </if>
+          <if test="params.rentType != 0">
+              and lease.rent <![CDATA[ <= ]]> #{params.rentMax, jdbcType=INTEGER }
+          </if>
         </if>
     </select>
 

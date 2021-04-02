@@ -1,5 +1,38 @@
 <template>
   <div class="contain">
+    <el-card style="width: 100%; margin-bottom: 20px;">
+      <el-form :inline="true" :model="params" style=" float: left;">
+        <el-form-item label="地址">
+          <el-select
+            v-model="params.address"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请输入关键词"
+            clearable=true
+            :remote-method="remoteMethod"
+            :loading="loading"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in addressOptions"
+              :key="item.code"
+              :label="item.fullname"
+              :value="item.code"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="价格区间">
+          <el-input v-model="params.rentMin" style="width: 100px;"></el-input>
+           - 
+          <el-input v-model="params.rentMax" style="width: 100px;"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
     <el-button
       type="primary"
       style="float: left; margin-bottom: 20px"
@@ -84,6 +117,7 @@ export default {
   name: "OwnerManagerment",
   data() {
     return {
+      addressOptions: [],
       isDisable: true,
       row: null,
       dialogTableVisible: false,
@@ -98,6 +132,11 @@ export default {
       },
       tableData: null,
       total: 0,
+      params: {
+        address: null,
+        rentMin: null, 
+        rentMax: null
+      }
     };
   },
   created() {
@@ -122,6 +161,31 @@ export default {
           
           this.total = res.data.total;
           console.log(this.tableData)
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    onSubmit() {
+      var query = ''
+      if (this.params.address !== null) query = query + '&address=' + this.params.address
+      if (this.params.rentMin !== null) query = query + '&rentMin=' + this.params.rentMin
+      if (this.params.rentMax !== null) query = query + '&rentMax=' + this.params.rentMax
+      axios
+        .get(
+          "/api/houseInfo/page?rentType=0&owner=" +
+            JSON.parse(window.localStorage.getItem("userInfo")).id + query,
+          {
+            headers: { token: window.localStorage.getItem("token") },
+          }
+        )
+        .then((res) => {
+          console.log(res);
+          this.tableData = res.data.records;
+          for (var i = 0; i < this.tableData.length; i++) {
+            this.tableData[i].pictureList = this.tableData[i].pictureList.map(function(el) { return 'http://localhost:8080/images/' + el } );
+          }
+          this.total = res.data.total;
         })
         .catch((error) => {
           console.log(error);
@@ -198,6 +262,7 @@ export default {
         })
         .catch((error) => {
           console.log(error);
+          alert("租户名或租户租房密钥错误")
         });
     },
     updateLease() {
@@ -243,7 +308,28 @@ export default {
       this.form.tenantName = null
       this.form.leaseKey = null
       this.form.rent = null
-    }
+    },
+    remoteMethod(query) {
+      if (query !== "") {
+        this.loading = true;
+        setTimeout(() => {
+          axios
+            .get("/api/address/query?name=" + query, {
+              headers: { token: window.localStorage.getItem('token') },
+            })
+            .then((res) => {
+              console.log(res);
+          this.loading = false;
+              this.addressOptions = res.data;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }, 200);
+      } else {
+        this.options = [];
+      }
+    },
   },
 };
 </script>
