@@ -17,6 +17,9 @@ public class HouseInfoResponseDto {
     @ApiModelProperty(value = "所有者")
     private String owner;
 
+    @ApiModelProperty(value = "联系电话")
+    private String phoneNum;
+
     @ApiModelProperty(value = "租约id")
     private Long leaseId;
 

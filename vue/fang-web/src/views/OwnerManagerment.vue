@@ -40,7 +40,7 @@
       >添加房源</el-button
     >
     <el-table :data="tableData" class="table">
-      <el-table-column label="图片" width="180">
+      <el-table-column align="center" label="图片" width="120">
         <template slot-scope="scope">
           <el-image 
             style="width: 100px; height: 100px"
@@ -49,24 +49,24 @@
           </el-image>
         </template>
       </el-table-column>
-      <el-table-column prop="description" label="描述" width="350">
+      <el-table-column align="center" prop="description" label="描述" width="350">
       </el-table-column>
-      <el-table-column
+      <el-table-column align="center"
         :formatter="formatAddress"
         prop="address"
         label="地址"
         width="350"
       >
       </el-table-column>
-      <el-table-column
+      <el-table-column align="center"
         label="是否出租"
-        width="180"
+        width="100"
       >
       <template slot-scope="scope">
         <el-button @click="leaseInfo(scope.row)">{{scope.row.rented == 1 && '已出租' || '未出租'}}</el-button>
       </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleShow(scope.$index, scope.row)"
             >查看</el-button
@@ -336,8 +336,8 @@ export default {
 
 <style lang="stylus" scoped>
 .contain {
-  width: 70%;
-  margin-left: 15%;
+  width: 60%;
+  margin-left: 20%;
 }
 .table {
   width: 100%;

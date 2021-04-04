@@ -34,7 +34,7 @@
       </el-form>
     </el-card>
     <el-table :data="tableData" style="width: 100%">
-      <el-table-column label="图片" width="180">
+      <el-table-column align="center" label="图片" width="120">
         <template slot-scope="scope">
           <el-image 
             style="width: 100px; height: 100px"
@@ -43,20 +43,20 @@
           </el-image>
         </template>
       </el-table-column>
-      <el-table-column prop="description" label="描述" width="280">
+      <el-table-column align="center" prop="description" label="描述" width="280">
       </el-table-column>
-      <el-table-column
+      <el-table-column align="center"
         :formatter="formatAddress"
         prop="address"
         label="地址"
         width="280"
       >
       </el-table-column>
-      <el-table-column prop="leaseRent" label="租金" width="100">
+      <el-table-column align="center" prop="leaseRent" label="租金" width="100">
       </el-table-column>      
-      <el-table-column prop="owner" label="房主" width="100">
+      <el-table-column align="center" prop="owner" label="房主" width="100">
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleShow(scope.$index, scope.row)"
             >查看</el-button

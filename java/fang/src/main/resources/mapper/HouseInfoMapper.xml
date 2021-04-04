@@ -20,6 +20,7 @@
     <resultMap id="HouseInfoResponseMap" type="com.yinglongyhy.fang.dto.HouseInfoResponseDto">
         <result column="id" property="id"></result>
         <result column="owner" property="owner"></result>
+        <result column="phoneNum" property="phoneNum"></result>
         <result column="leaseId" property="leaseId"></result>
         <result column="tenant" property="tenant"></result>
         <result column="leaseKey" property="leaseKey"></result>
@@ -92,6 +93,7 @@
         select
         house_info.id id,
         (select name from user where user.deleted=0 and user.id=house_info.owner) owner,
+        (select phone_num from user where user.deleted=0 and user.id=house_info.owner) phoneNum,
         (select name from user where user.deleted=0 and user.id=lease.tenant) tenant,
         address.id a_id,
         address.code a_code,

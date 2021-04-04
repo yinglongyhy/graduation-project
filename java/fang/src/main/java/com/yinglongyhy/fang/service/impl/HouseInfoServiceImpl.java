@@ -11,6 +11,7 @@ import com.yinglongyhy.fang.entity.*;
 import com.yinglongyhy.fang.mapper.HouseInfoMapper;
 import com.yinglongyhy.fang.mapper.LabelMapper;
 import com.yinglongyhy.fang.mapper.PictureMapper;
+import com.yinglongyhy.fang.mapper.UserMapper;
 import com.yinglongyhy.fang.service.IHouseInfoService;
 import com.yinglongyhy.fang.service.ILabel2houseInfoService;
 import com.yinglongyhy.fang.service.ILabelService;

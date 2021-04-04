@@ -1,54 +1,99 @@
 <template>
-  <div class="houseInfo">
-    <el-row>
-      <el-col :span="12">
-        <div class="img-box">
-          <el-carousel :interval="4000" type="card" height="360px" width="100%">
-            <el-carousel-item
-              v-for="item in this.formLabelAlign.pictureList"
-              :key="item.id"
-            >
-              <img :src="item.url" height="360px" alt="" />
-            </el-carousel-item>
-          </el-carousel>
-        </div>
-      </el-col>
-      <el-col :span="12">
-        <el-card class="box-card" style="height: 360px">
-          <p style="color: red; font-size: 50px; float: left; width: 100%">
-            {{ this.formLabelAlign.rent }} 元/月
+  <div class="contain">
+    <div>
+      <el-carousel :interval="4000" type="card" width="100%">
+        <el-carousel-item
+          v-for="item in this.formLabelAlign.pictureList"
+          :key="item.id"
+        >
+          <!-- <img :src="item.url" height="360px" alt="" /> -->
+          <el-image
+            style=""
+            :src="item.url"
+            :fit="scale-down"></el-image>
+        </el-carousel-item>
+      </el-carousel>
+    </div>
+    <div>
+      <el-row>
+        <el-col :span="24">
+          <el-tag
+            style="float: left; margin: 10px"
+            v-for="item in this.formLabelAlign.labelList"
+            :key="item"
+            >{{ item }}
+          </el-tag>
+       </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <p style="float: left; color: black; font-size: 30px">
+            <i class="el-icon-info"></i>
+            房源描述：{{this.formLabelAlign.description }}
           </p>
-          <p style="color: gray; font-size: 30px; float: left; width: 100%">
-            建筑面积：{{ this.formLabelAlign.area }}平米
-          </p>
-          <p style="color: gray; font-size: 30px; float: left; width: 100%">
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <p style="float: left; color: black; font-size: 20px">
+            <i class="el-icon-location"></i>
             {{ this.formLabelAlign.address.fullname + this.formLabelAlign.detailedAddress }}
           </p>
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="24">
-        <p style="float: left; color: gray; font-size: 30px">
-          房源描述：{{ this.formLabelAlign.description }}
-        </p>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4">
-        <p style="float: left; color: gray; font-size: 30px;">
-        亮点：
-        </p>
-      </el-col>
-      <el-col :span="20">
-        <el-tag
-          style="float: left"
-          v-for="item in this.formLabelAlign.labelList"
-          :key="item"
-          >{{ item }}</el-tag
-        >
-      </el-col>
-    </el-row>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <p style="float: left; color: black; font-size: 30px">
+            <i class="el-icon-s-home"></i>
+            <span style="color: red">     {{ this.formLabelAlign.area }}</span> 平米
+          </p>
+        </el-col>
+        <el-col :span="12">
+          <p style="float: left; color: black; font-size: 30px">
+            <i class="el-icon-money"></i>
+            <span style="color: red">     {{ this.formLabelAlign.rent }}</span> 元/月
+          </p>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <p style="float: left; color: black; font-size: 30px">
+            <i class="el-icon-user"></i>
+            <span>     {{ this.formLabelAlign.owner }}</span>
+          </p>
+        </el-col>
+        <el-col :span="12">
+          <p style="float: left; color: black; font-size: 30px">
+            <i class="el-icon-phone"></i>
+            <span>     {{ this.formLabelAlign.phoneNum }}</span>
+          </p>
+        </el-col>
+      </el-row>
+    </div>
+    <div>
+      <el-row>
+        <el-col :span="24">
+          <p style="float: left; color: black; font-size: 30px">
+            图片详情
+          </p>
+        </el-col>
+      </el-row>
+      <el-row v-for="(item, index) in pictureListForTwo" :key="index">
+        <el-col :span="12">
+          <el-image
+            style="margin: 10px;"
+            :src="item[0].url"
+            :fit="scale-down"></el-image>
+        </el-col>
+        <el-col :span="12">
+          <el-image  
+            v-if="item[1] != undefined"
+            style="margin: 10px;"
+            :src="item[1].url"
+            :fit="scale-down"></el-image>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
@@ -71,6 +116,8 @@ export default {
       formLabelAlign: {
         id: null,
         description: null,
+        owner: null,
+        phoneNum: null,
         address: null,
         detailedAddress: null,
         area: null,
@@ -83,6 +130,16 @@ export default {
   created() {
     if (this.$route.params.row !== null) {
       this.init(this.$route.params.id);
+    }
+  },
+  computed: {
+    pictureListForTwo: function () {
+      // `this` 指向 vm 实例
+      var result = [];
+      for(var i=0,len=this.formLabelAlign.pictureList.length;i<len;i+=2){
+        result.push(this.formLabelAlign.pictureList.slice(i,i+2));
+      }
+      return result
     }
   },
   methods: {
@@ -106,6 +163,8 @@ export default {
           this.formLabelAlign.area = row.area;
           this.formLabelAlign.rent = row.rent;
           this.formLabelAlign.labelList = row.labelList;
+          this.formLabelAlign.owner = row.owner;
+          this.formLabelAlign.phoneNum = row.phoneNum;
           for (var i = 0; i < row.pictureList.length; i++) {
             var name = row.pictureList[i];
             this.formLabelAlign.pictureList.push({
@@ -124,16 +183,10 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.houseInfo {
-  margin-left: 20%;
-  margin-top: 10%;
+
+.contain {
   width: 60%;
+  margin-left: 20%;
 }
 
-.img-box {
-}
-
-.info {
-  margin-left: 0;
-}
 </style>

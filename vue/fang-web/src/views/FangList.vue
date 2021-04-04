@@ -1,37 +1,77 @@
 <template>
-  <div id="fangList">
-    <el-card class="box-card">
-      <el-form
-        ref="form"
-        label-position="left"
-        :model="form"
-        label-width="80px"
-        style="text-align: left"
-      >
-        <el-form-item label="区域">
-          <el-radio-group v-model="form.address" size="mini">
-            <el-radio-button
-              v-for="addr in addresses"
-              :label="addr"
-              :key="addr"
-            ></el-radio-button>
-          </el-radio-group>
+  <div class="contain">
+    <el-card style="width: 100%; margin-bottom: 20px;">
+      <el-form :inline="true" :model="params" style=" float: left;">
+        <el-form-item label="地址">
+          <el-select
+            v-model="params.address"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请输入关键词"
+            clearable=true
+            :remote-method="remoteMethod"
+            :loading="loading"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in addressOptions"
+              :key="item.code"
+              :label="item.fullname"
+              :value="item.code"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="租金">
-          <el-radio-group v-model="form.price" size="mini" 
-              @change="submit()">
-            <el-radio-button
-              v-for="price in prices"
-              :label="price"
-              :key="price"
-            ></el-radio-button>
-          </el-radio-group>
+        <el-form-item label="价格区间">
+          <el-input v-model="params.rentMin" style="width: 100px;"></el-input>
+           - 
+          <el-input v-model="params.rentMax" style="width: 100px;"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
       </el-form>
     </el-card>
-    <el-main class="wrap">
+    <!-- <el-main class="wrap">
       <HouseList :items="this.items"></HouseList>
-    </el-main>
+    </el-main> -->
+    <el-table :data="tableData" class="table" @cell-click="houseInfo">
+      <el-table-column width="180">
+        <template slot-scope="scope">
+          <el-image 
+            style="width: 100px; height: 100px"
+            :src="scope.row.pictureList[0]" 
+            :preview-src-list="scope.row.pictureList">
+          </el-image>
+        </template> 
+      </el-table-column>
+      <el-table-column width="680">
+        <template slot-scope="scope">
+          <p style="margin: 5px; text-align: center;">
+            <span class="description">{{ scope.row.description }}</span>
+          </p>
+          <p style="text-align: center;">
+            <span v-for="(lable, index) in scope.row.labelList" :key="lable">
+              {{
+                (index === scope.row.labelList.length - 1 && lable) || lable + " | "
+              }}
+            </span>
+          </p>
+          <p style="margin: 5px; text-align: center;">
+            {{ scope.row.address.fullname + scope.row.detailedAddress }}
+          </p>
+        </template>
+      </el-table-column>
+      <el-table-column width="180">
+        <template slot-scope="scope">
+          <p style="margin: 5px; text-align: center;">
+            <span class="price">{{ scope.row.rent }}</span
+            >元/月
+          </p>
+        </template>
+      </el-table-column>
+    </el-table>
     <el-main>
       <el-pagination layout="prev, pager, next" :total="this.total">
       </el-pagination>
@@ -41,46 +81,21 @@
 
 <script>
 import axios from "axios";
-import HouseList from "@/components/HouseList.vue";
+// import HouseList from "@/components/HouseList.vue";
 export default {
   name: "FangList",
   components: {
-    HouseList,
+    // HouseList,
   },
   data() {
     return {
-      items: null,
+      tableData: null,
       total: 0,
-      addresses: [
-        "不限",
-        "增城",
-        "番禺",
-        "南沙",
-        "花都",
-        "白云",
-        "海珠",
-        "越秀",
-      ],
-      prices: [
-        "不限",
-        "500元以下",
-        "500-1000元",
-        "2000-3000元",
-        "3000-5000元",
-        "5000-8000元",
-        "8000元以上",
-      ],
-      form: {
-        address: "不限",
-        price: "不限",
-        name: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: "",
+      addressOptions: [],
+      params: {
+        address: null,
+        rentMin: null, 
+        rentMax: null
       },
     };
   },
@@ -89,59 +104,80 @@ export default {
   },
   methods: {
     init() {
-      var params = "";
-      switch (this.form.price) {
-        case "500元以下":
-          params += '&rentMax=500';
-          break;
-        case "500-1000元":
-          params += '&rentMin=500&rentMax=1000';
-          break;
-        case "2000-3000元":
-          params += '&rentMin=2000&rentMax=3000';
-          break;
-        case "3000-5000元":
-          params += '&rentMin=3000&rentMax=5000';
-          break;
-        case "5000-8000元":
-          params += '&rentMin=5000&rentMax=8000';
-          break;
-        case "8000元以上":
-          params += '&rentMin=8000';
-          break;
-        default:
-          break;
-      }
-
+      var query = ''
+      this.getList(query)
+    },
+    onSubmit() {
+      var query = ''
+      if (this.params.address !== null) query = query + '&address=' + this.params.address
+      if (this.params.rentMin !== null) query = query + '&rentMin=' + this.params.rentMin
+      if (this.params.rentMax !== null) query = query + '&rentMax=' + this.params.rentMax
+      this.getList(query)
+    },
+    getList(query) {
       axios
-        .get("/api/houseInfo/page?rented=0" + params, {
+        .get("/api/houseInfo/page?rented=0" + query, {
           headers: { token: window.localStorage.getItem("token") },
         })
         .then((res) => {
           console.log(res);
-          this.items = res.data.records;
+          this.tableData = res.data.records;
+          for (var i = 0; i < this.tableData.length; i++) {
+            this.tableData[i].pictureList = this.tableData[i].pictureList.map(function(el) { return 'http://localhost:8080/images/' + el } );
+          }
           this.total = res.data.total;
         })
         .catch((error) => {
           console.log(error);
         });
     },
-    submit(label) {
-      console.log(label)
-      this.init();
-    }
+    remoteMethod(query) {
+      if (query !== "") {
+        this.loading = true;
+        setTimeout(() => {
+          axios
+            .get("/api/address/query?name=" + query, {
+              headers: { token: window.localStorage.getItem('token') },
+            })
+            .then((res) => {
+              console.log(res);
+          this.loading = false;
+              this.addressOptions = res.data;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }, 200);
+      } else {
+        this.options = [];
+      }
+    },
+    houseInfo(row, column, cell, event) {
+      if (column.id === "el-table_1_column_1") {
+        return
+      }
+      console.log(row, column, cell, event);
+      this.$router.push({
+        name: "HouseInfo",
+        params: {
+          id: row.id,
+        },
+      });
+    },
+    
   },
 };
 </script>
 
 <style lang="stylus" scoped>
-#fangList {
-  margin-left: 30%;
-  width: 40%;
+
+.contain {
+  width: 60%;
+  margin-left: 20%;
 }
 
-.text {
-  font-size: 15px;
+.table {
+  width: 100%;
 }
 
 .item {
@@ -152,8 +188,17 @@ export default {
   margin-top: 30px;
 }
 
-.wrap {
-  width: 100%;
-  margin: 0 auto;
+.description {
+  font-size: 20px;
+  font-weight: 500;
+  color: #000000;
+  padding-right: 4px;
+}
+
+.price {
+  font-size: 28px;
+  font-weight: 700;
+  color: #f32e2e;
+  padding-right: 4px;
 }
 </style>
