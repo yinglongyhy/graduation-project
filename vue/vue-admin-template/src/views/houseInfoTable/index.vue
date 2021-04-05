@@ -1,5 +1,43 @@
 <template>
   <div class="app-container">
+    <el-card style="width: 100%; margin-bottom: 20px;">
+      <el-form :inline="true" :model="params" style=" float: left;">
+        <el-form-item label="地址">
+          <el-select
+            v-model="params.address"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请输入关键词"
+            clearable="true"
+            :remote-method="remoteMethod"
+            :loading="loading"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in addressOptions"
+              :key="item.code"
+              :label="item.fullname"
+              :value="item.code"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="价格区间">
+          <el-input v-model="params.rentMin" style="width: 100px;" />
+          -
+          <el-input v-model="params.rentMax" style="width: 100px;" />
+        </el-form-item>
+        <el-form-item label="租赁状态">
+          <el-select v-model="params.rented" placeholder="全部" style="width: 100px;" clearable="true">
+            <el-option label="已租" value="1" />
+            <el-option label="未租" value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -20,7 +58,7 @@
       </el-table-column>
       <el-table-column label="区域地址" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.address }}</span>
+          <span>{{ scope.row.address.fullname }}</span>
         </template>
       </el-table-column>
       <el-table-column label="详细地址" align="center">
@@ -77,7 +115,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <Page ref="page" :url="url" @refreshList="refreshList" />
+    <Page ref="page" :url="url" :params="params" @refreshList="refreshList" />
 
     <el-dialog title="编辑" :visible.sync="dialogFormVisible">
       <el-form :model="form">
@@ -113,6 +151,7 @@
 import Page from '@/components/Page'
 import { deleteById } from '@/utils/delete'
 import { editById } from '@/utils/edit'
+import axios from 'axios'
 
 export default {
   components: { Page },
@@ -130,6 +169,12 @@ export default {
       dialogTableVisible: false,
       dialogFormVisible: false,
       formLabelWidth: '120px',
+      params: {
+        address: null,
+        rentMin: null,
+        rentMax: null
+      },
+      addressOptions: [],
       form: {
         id: null,
         owner: null,
@@ -139,7 +184,7 @@ export default {
         area: null,
         rent: null
       },
-      url: '/api/admin/houseInfo/page',
+      url: '/api/houseInfo/page',
       list: null,
       listLoading: true
     }
@@ -148,8 +193,32 @@ export default {
     // this.fetchData(this.currentPage, this.pageSize);
   },
   methods: {
+    remoteMethod(query) {
+      if (query !== '') {
+        this.loading = true
+        setTimeout(() => {
+          axios
+            .get('/api/address/query?name=' + query, {
+              headers: { token: this.$store.getters.token }
+            })
+            .then((res) => {
+              console.log(res)
+              this.loading = false
+              this.addressOptions = res.data
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+        }, 200)
+      } else {
+        this.options = []
+      }
+    },
+    onSubmit() {
+      this.$refs.page.clear()
+      this.$refs.page.refresh()
+    },
     refreshList(list) {
-      console.log(list)
       this.list = list
       this.listLoading = false
     },

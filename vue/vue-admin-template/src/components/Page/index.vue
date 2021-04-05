@@ -17,7 +17,7 @@ import { getList } from '@/api/page'
 
 export default {
   // eslint-disable-next-line vue/require-prop-types
-  props: ['url'],
+  props: ['url', 'params'],
   data() {
     return {
       currentPage: 1,
@@ -33,11 +33,15 @@ export default {
     })
   },
   methods: {
+    clear() {
+      this.currentPage = 1
+      this.pageSize = 10
+    },
     refresh() {
-      this.fetchData(this.url, {
-        pageNumber: this.currentPage,
-        pageSize: this.pageSize
-      })
+      this.params.pageNumber = this.currentPage
+      this.params.pageSize = this.pageSize
+      console.log(this.params)
+      this.fetchData(this.url, this.params)
     },
     fetchData(url, params) {
       getList(url, params).then((response) => {
@@ -49,17 +53,11 @@ export default {
     handleSizeChange(val) {
       this.currentPage = 1
       this.pageSize = val
-      this.fetchData(this.url, {
-        pageNumber: this.currentPage,
-        pageSize: this.pageSize
-      })
+      this.refresh()
     },
     handleCurrentChange(val) {
       this.currentPage = val
-      this.fetchData(this.url, {
-        pageNumber: this.currentPage,
-        pageSize: this.pageSize
-      })
+      this.refresh()
     }
   }
 }

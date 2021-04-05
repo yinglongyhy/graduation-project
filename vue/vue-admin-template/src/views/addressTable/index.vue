@@ -1,5 +1,21 @@
 <template>
   <div class="app-container">
+    <el-card style="width: 100%; margin-bottom: 20px;">
+      <el-form :inline="true" :model="params" style=" float: left;">
+        <el-form-item label="地址编码">
+          <el-input v-model="params.code" style="width: 200px;" />
+        </el-form-item>
+        <el-form-item label="地址">
+          <el-input v-model="params.name" style="width: 200px;" />
+        </el-form-item>
+        <el-form-item label="地址全称">
+          <el-input v-model="params.fullname" style="width: 300px;" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -28,13 +44,6 @@
           {{ scope.row.fullname }}
         </template>
       </el-table-column>
-      <!-- <el-table-column class-name="status-col" label="删除标记" align="center">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.deleted | statusFilter">{{
-            (scope.row.deleted == 0 && "未删除") || "已删除"
-          }}</el-tag>
-        </template>
-      </el-table-column> -->
       <el-table-column align="center" prop="created_at" label="创建时间">
         <template slot-scope="scope">
           <i class="el-icon-time" />
@@ -62,7 +71,7 @@
         </template>
       </el-table-column> -->
     </el-table>
-    <Page :url="url" @refreshList="refreshList" />
+    <Page ref="page" :url="url" :params="params" @refreshList="refreshList" />
   </div>
 </template>
 
@@ -83,6 +92,11 @@ export default {
   data() {
     return {
       url: '/api/admin/address/page',
+      params: {
+        code: null,
+        name: null,
+        fullname: null
+      },
       list: null,
       listLoading: true
     }
@@ -91,6 +105,10 @@ export default {
     // this.fetchData(this.currentPage, this.pageSize);
   },
   methods: {
+    onSubmit() {
+      this.$refs.page.clear()
+      this.$refs.page.refresh()
+    },
     refreshList(list) {
       this.list = list
       this.listLoading = false

@@ -30,6 +30,8 @@
         <result column="area" property="area"></result>
         <result column="rent" property="rent"></result>
         <result column="rented" property="rented"></result>
+        <result column="createTime" property="createTime"></result>
+        <result column="modifiedTime" property="modifiedTime"></result>
         <association property="address" javaType="com.yinglongyhy.fang.entity.Address">
             <id column="a_id" property="id"></id>
             <result column="a_code" property="code"></result>
@@ -54,7 +56,9 @@
         house_info.description description,
         house_info.area area,
         house_info.rent rent,
-        house_info.rented rented
+        house_info.rented rented,
+        house_info.create_time createTime,
+        house_info.modified_time modifiedTime
         from house_info
         left join address on address.deleted=0 and address.code=house_info.address
         left join lease on lease.deleted=0 and lease.house_info=house_info.id

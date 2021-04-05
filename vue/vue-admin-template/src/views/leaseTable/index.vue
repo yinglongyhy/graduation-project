@@ -62,7 +62,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <Page ref="page" :url="url" @refreshList="refreshList" />
+    <Page ref="page" :url="url" :params="params" @refreshList="refreshList" />
 
     <el-dialog title="编辑" :visible.sync="dialogFormVisible">
       <el-form :model="form">
@@ -112,6 +112,7 @@ export default {
         houseInfo: null,
         rent: null
       },
+      params: {},
       url: '/api/admin/lease/page',
       list: null,
       listLoading: true
@@ -121,6 +122,10 @@ export default {
     // this.fetchData(this.currentPage, this.pageSize);
   },
   methods: {
+    onSubmit() {
+      this.$refs.page.clear()
+      this.$refs.page.refresh()
+    },
     refreshList(list) {
       this.list = list
       this.listLoading = false

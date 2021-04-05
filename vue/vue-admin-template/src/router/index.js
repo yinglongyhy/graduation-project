@@ -56,130 +56,62 @@ export const constantRoutes = [
   },
 
   {
-    path: '/addressTable',
+    path: '/table',
     component: Layout,
+    redirect: '/table/addressTable',
+    name: 'Table',
+    meta: { title: '数据库表管理', icon: 'table' },
     children: [
       {
-        path: 'index',
+        path: 'addressTable',
         name: 'AddressTable',
         component: () => import('@/views/addressTable/index'),
-        meta: { title: 'AddressTable', icon: 'table' }
-      }
-    ]
-  },
-
-  {
-    path: '/houseInfoTable',
-    component: Layout,
-    children: [
+        meta: { title: 'AddressTable', icon: '' }
+      },
       {
-        path: 'index',
+        path: 'houseInfoTable',
         name: 'HouseInfoTable',
         component: () => import('@/views/houseInfoTable/index'),
-        meta: { title: 'HouseInfoTable', icon: 'table' }
-      }
-    ]
-  },
-
-  {
-    path: '/label2houseInfoTable',
-    component: Layout,
-    children: [
+        meta: { title: 'HouseInfoTable', icon: '' }
+      },
       {
-        path: 'index',
+        path: 'label2houseInfoTable',
         name: 'Label2houseInfoTable',
         component: () => import('@/views/label2houseInfoTable/index'),
-        meta: { title: 'Label2houseInfoTable', icon: 'table' }
-      }
-    ]
-  },
-
-  {
-    path: '/labelTable',
-    component: Layout,
-    children: [
+        meta: { title: 'Label2houseInfoTable', icon: '' }
+      },
       {
-        path: 'index',
+        path: 'labelTable',
         name: 'LabelTable',
         component: () => import('@/views/labelTable/index'),
-        meta: { title: 'LabelTable', icon: 'table' }
-      }
-    ]
-  },
-
-  {
-    path: '/leaseTable',
-    component: Layout,
-    children: [
+        meta: { title: 'LabelTable', icon: '' }
+      },
       {
-        path: 'index',
+        path: 'leaseTable',
         name: 'LeaseTable',
         component: () => import('@/views/leaseTable/index'),
-        meta: { title: 'LeaseTable', icon: 'table' }
-      }
-    ]
-  },
-
-  {
-    path: '/loginTokenTable',
-    component: Layout,
-    children: [
+        meta: { title: 'LeaseTable', icon: '' }
+      },
       {
-        path: 'index',
+        path: 'loginTokenTable',
         name: 'LoginTokenTable',
         component: () => import('@/views/loginTokenTable/index'),
-        meta: { title: 'LoginTokenTable', icon: 'table' }
-      }
-    ]
-  },
-
-  {
-    path: '/picture2houseInfoTable',
-    component: Layout,
-    children: [
+        meta: { title: 'LoginTokenTable', icon: '' }
+      },
       {
-        path: 'index',
+        path: 'picture2houseInfoTable',
         name: 'Picture2houseInfoTable',
         component: () => import('@/views/picture2houseInfoTable/index'),
-        meta: { title: 'Picture2houseInfoTable', icon: 'table' }
-      }
-    ]
-  },
-
-  {
-    path: '/pictureTable',
-    component: Layout,
-    children: [
+        meta: { title: 'Picture2houseInfoTable', icon: '' }
+      },
       {
-        path: 'index',
+        path: 'pictureTable',
         name: 'PictureTable',
         component: () => import('@/views/pictureTable/index'),
-        meta: { title: 'PictureTable', icon: 'table' }
+        meta: { title: 'PictureTable', icon: '' }
       }
     ]
   },
-
-  // {
-  //   path: '/example',
-  //   component: Layout,
-  //   redirect: '/example/table',
-  //   name: 'Example',
-  //   meta: { title: 'Example', icon: 'el-icon-s-help' },
-  //   children: [
-  //     {
-  //       path: 'table',
-  //       name: 'Table',
-  //       component: () => import('@/views/table/index'),
-  //       meta: { title: 'Table', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'tree',
-  //       name: 'Tree',
-  //       component: () => import('@/views/tree/index'),
-  //       meta: { title: 'Tree', icon: 'tree' }
-  //     }
-  //   ]
-  // },
 
   // {
   //   path: '/form',

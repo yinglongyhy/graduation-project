@@ -64,8 +64,17 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination background layout="prev, pager, next" :total="this.total">
-    </el-pagination>
+    <div class="page">
+      <el-pagination
+        :current-page="currentPage"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="pageSize"
+        :total="total"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
   </div>
 </template>
 
@@ -76,6 +85,8 @@ export default {
   name: "TenantManagerment",
   data() {
     return {
+      currentPage: 1,
+      pageSize: 10,
       addressOptions: [],
       tableData: null,
       total: 0,
@@ -91,34 +102,18 @@ export default {
   },
   methods: {
     init() {
-      axios
-        .get(
-          "/api/houseInfo/page?tenant=" +
-            JSON.parse(window.localStorage.getItem("userInfo")).id,
-          {
-            headers: { token: window.localStorage.getItem("token") },
-          }
-        )
-        .then((res) => {
-          console.log(res);
-          this.tableData = res.data.records;
-          for (var i = 0; i < this.tableData.length; i++) {
-            this.tableData[i].pictureList = this.tableData[i].pictureList.map(function(el) { return 'http://localhost:8080/images/' + el } );
-          }
-          this.total = res.data.total;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      this.onSubmit()
     },
     onSubmit() {
       var query = ''
+      query = query + '&pageNumber=' + this.currentPage
+      query = query + '&pageSize=' + this.pageSize
       if (this.params.address !== null) query = query + '&address=' + this.params.address
       if (this.params.rentMin !== null) query = query + '&rentMin=' + this.params.rentMin
       if (this.params.rentMax !== null) query = query + '&rentMax=' + this.params.rentMax
       axios
         .get(
-          "/api/houseInfo/page?rentType=1&tenant=" +
+          "/api/houseInfo/page?rented=1&rentType=1&tenant=" +
             JSON.parse(window.localStorage.getItem("userInfo")).id + query,
           {
             headers: { token: window.localStorage.getItem("token") },
@@ -195,6 +190,15 @@ export default {
         this.options = [];
       }
     },
+    handleSizeChange(val) {
+      this.currentPage = 1
+      this.pageSize = val
+      this.onSubmit()
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.onSubmit()
+    }
   },
 };
 </script>
@@ -203,5 +207,8 @@ export default {
 .contain {
   width: 60%;
   margin-left: 20%;
+}
+.page {
+  text-align: center
 }
 </style>

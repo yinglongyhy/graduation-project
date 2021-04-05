@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 /**
  * <p>
  * 标签表 前端控制器
@@ -43,7 +45,11 @@ public class LabelTableRestController {
             @ModelAttribute @ApiParam(value = "params") Label params,
             @RequestParam(value = "pageNumber", required = false, defaultValue = "1") @ApiParam(value = "pageNumber", defaultValue = "1") Integer pageNumber
             , @RequestParam(value = "pageSize", required = false, defaultValue = "10") @ApiParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
-        return new ResponseEntity<>(labelService.page(new Page<>(pageNumber, pageSize), new QueryWrapper<>(params)), HttpStatus.OK);
+        QueryWrapper<Label> wrapper = new QueryWrapper<>();
+        if (Objects.nonNull(params.getName())) {
+            wrapper = wrapper.like("name", "%" + params.getName() + "%");
+        }
+        return new ResponseEntity<>(labelService.page(new Page<>(pageNumber, pageSize), wrapper), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

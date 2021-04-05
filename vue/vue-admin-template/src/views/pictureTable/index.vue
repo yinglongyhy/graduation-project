@@ -13,6 +13,14 @@
           {{ scope.$index }}
         </template>
       </el-table-column>
+      <el-table-column label="图片">
+        <template slot-scope="scope">
+          <el-image
+            style="width: 100px; height: 100px"
+            :src="'http://localhost:8080/images/' + scope.row.name"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="图片名称">
         <template slot-scope="scope">
           {{ scope.row.name }}
@@ -57,7 +65,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <Page ref="page" :url="url" @refreshList="refreshList" />
+    <Page ref="page" :url="url" :params="params" @refreshList="refreshList" />
 
     <el-dialog title="编辑" :visible.sync="dialogFormVisible">
       <el-form :model="form">
@@ -103,6 +111,7 @@ export default {
         name: null,
         originalName: null
       },
+      params: {},
       url: '/api/admin/picture/page',
       list: null,
       listLoading: true
@@ -112,6 +121,10 @@ export default {
     // this.fetchData(this.currentPage, this.pageSize);
   },
   methods: {
+    onSubmit() {
+      this.$refs.page.clear()
+      this.$refs.page.refresh()
+    },
     refreshList(list) {
       this.list = list
       this.listLoading = false

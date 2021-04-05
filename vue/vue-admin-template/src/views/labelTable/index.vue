@@ -1,5 +1,15 @@
 <template>
   <div class="app-container">
+    <el-card style="width: 100%; margin-bottom: 20px;">
+      <el-form :inline="true" :model="params" style=" float: left;">
+        <el-form-item label="标签名">
+          <el-input v-model="params.name" style="width: 200px;" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -52,7 +62,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <Page ref="page" :url="url" @refreshList="refreshList" />
+    <Page ref="page" :url="url" :params="params" @refreshList="refreshList" />
 
     <el-dialog title="编辑" :visible.sync="dialogFormVisible">
       <el-form :model="form">
@@ -95,6 +105,9 @@ export default {
         name: null
       },
       url: '/api/admin/label/page',
+      params: {
+        name: null
+      },
       list: null,
       listLoading: true
     }
@@ -103,6 +116,10 @@ export default {
     // this.fetchData(this.currentPage, this.pageSize);
   },
   methods: {
+    onSubmit() {
+      this.$refs.page.clear()
+      this.$refs.page.refresh()
+    },
     refreshList(list) {
       this.list = list
       this.listLoading = false

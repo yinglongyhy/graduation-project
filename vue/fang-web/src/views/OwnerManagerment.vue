@@ -28,6 +28,12 @@
            - 
           <el-input v-model="params.rentMax" style="width: 100px;"></el-input>
         </el-form-item>
+        <el-form-item label="租赁状态">
+          <el-select v-model="params.rented" placeholder="全部" style="width: 100px;" clearable=true>
+            <el-option label="已租" value="1"></el-option>
+            <el-option label="未租" value="0"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
@@ -105,8 +111,17 @@
         <el-button @click="dialogFormVisible = false">取 消</el-button>
       </div>
     </el-dialog>
-    <el-pagination background layout="prev, pager, next" :total="this.total">
-    </el-pagination>
+    <div class="page">
+      <el-pagination
+        :current-page="currentPage"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="pageSize"
+        :total="total"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
   </div>
 </template>
 
@@ -117,6 +132,8 @@ export default {
   name: "OwnerManagerment",
   data() {
     return {
+      currentPage: 1,
+      pageSize: 10,
       addressOptions: [],
       isDisable: true,
       row: null,
@@ -134,8 +151,9 @@ export default {
       total: 0,
       params: {
         address: null,
-        rentMin: null, 
-        rentMax: null
+        rentMin: null,
+        rentMax: null,
+        rented: null
       }
     };
   },
@@ -144,30 +162,13 @@ export default {
   },
   methods: {
     init() {
-      axios
-        .get(
-          "/api/houseInfo/page?owner=" +
-            JSON.parse(window.localStorage.getItem("userInfo")).id,
-          {
-            headers: { token: window.localStorage.getItem("token") },
-          }
-        )
-        .then((res) => {
-          console.log(res);
-          this.tableData = res.data.records;
-          for (var i = 0; i < this.tableData.length; i++) {
-            this.tableData[i].pictureList = this.tableData[i].pictureList.map(function(el) { return 'http://localhost:8080/images/' + el } );
-          }
-          
-          this.total = res.data.total;
-          console.log(this.tableData)
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      this.onSubmit()
     },
     onSubmit() {
       var query = ''
+      query = query + '&pageNumber=' + this.currentPage
+      query = query + '&pageSize=' + this.pageSize
+      if (this.params.rented !== null && this.params.rented !== '') query = query + '&rented=' + this.params.rented
       if (this.params.address !== null) query = query + '&address=' + this.params.address
       if (this.params.rentMin !== null) query = query + '&rentMin=' + this.params.rentMin
       if (this.params.rentMax !== null) query = query + '&rentMax=' + this.params.rentMax
@@ -330,6 +331,15 @@ export default {
         this.options = [];
       }
     },
+    handleSizeChange(val) {
+      this.currentPage = 1
+      this.pageSize = val
+      this.onSubmit()
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.onSubmit()
+    }
   },
 };
 </script>
@@ -341,5 +351,8 @@ export default {
 }
 .table {
   width: 100%;
+}
+.page {
+  text-align: center
 }
 </style>

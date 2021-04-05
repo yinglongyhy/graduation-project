@@ -72,10 +72,17 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-main>
-      <el-pagination layout="prev, pager, next" :total="this.total">
-      </el-pagination>
-    </el-main>
+    <div class="page">
+      <el-pagination
+        :current-page="currentPage"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="pageSize"
+        :total="total"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
   </div>
 </template>
 
@@ -89,8 +96,10 @@ export default {
   },
   data() {
     return {
-      tableData: null,
+      currentPage: 1,
+      pageSize: 10,
       total: 0,
+      tableData: null,
       addressOptions: [],
       params: {
         address: null,
@@ -104,11 +113,12 @@ export default {
   },
   methods: {
     init() {
-      var query = ''
-      this.getList(query)
+      this.onSubmit()
     },
     onSubmit() {
       var query = ''
+      query = query + '&pageNumber=' + this.currentPage
+      query = query + '&pageSize=' + this.pageSize
       if (this.params.address !== null) query = query + '&address=' + this.params.address
       if (this.params.rentMin !== null) query = query + '&rentMin=' + this.params.rentMin
       if (this.params.rentMax !== null) query = query + '&rentMax=' + this.params.rentMax
@@ -164,7 +174,15 @@ export default {
         },
       });
     },
-    
+    handleSizeChange(val) {
+      this.currentPage = 1
+      this.pageSize = val
+      this.onSubmit()
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.onSubmit()
+    }
   },
 };
 </script>
@@ -200,5 +218,9 @@ export default {
   font-weight: 700;
   color: #f32e2e;
   padding-right: 4px;
+}
+
+.page {
+  text-align: center
 }
 </style>
