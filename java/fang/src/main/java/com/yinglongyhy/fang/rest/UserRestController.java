@@ -1,7 +1,11 @@
 package com.yinglongyhy.fang.rest;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.yinglongyhy.fang.entity.Address;
 import com.yinglongyhy.fang.entity.LoginToken;
+import com.yinglongyhy.fang.entity.Picture;
 import com.yinglongyhy.fang.entity.User;
 import com.yinglongyhy.fang.enums.RoleEnum;
 import com.yinglongyhy.fang.exception.RestApiException;
@@ -10,6 +14,7 @@ import com.yinglongyhy.fang.service.IUserService;
 import com.yinglongyhy.fang.threadlocal.TokenThreadLocal;
 import com.yinglongyhy.fang.threadlocal.UserThreadLocal;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +82,8 @@ public class UserRestController {
         user.setPhoneNum(userThreadLocal.getPhoneNum());
         if (StringUtils.isNotBlank(user.getPassword())) {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        } else {
+            user.setPassword(null);
         }
         userService.update(user);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -102,5 +109,44 @@ public class UserRestController {
             throw new RestApiException("UserRestController", "delete token failed", "删除token失败");
         }
         return new ResponseEntity<>("退出登陆成功", HttpStatus.OK);
+    }
+
+    @GetMapping("/page")
+    @ApiOperation(value = "获取用户分页", notes = "")
+    public ResponseEntity<Page<User>> page(
+            @ModelAttribute @ApiParam(value = "params") User params,
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "1") @ApiParam(value = "pageNumber", defaultValue = "1") Integer pageNumber
+            , @RequestParam(value = "pageSize", required = false, defaultValue = "10") @ApiParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        if (Objects.nonNull(params.getName())) {
+            wrapper = wrapper.like("name", "%" + params.getName() + "%");
+        }
+        if (Objects.nonNull(params.getPhoneNum())) {
+            wrapper = wrapper.like("phone_num", "%" + params.getPhoneNum() + "%");
+        }
+        if (Objects.nonNull(params.getRole())) {
+            wrapper = wrapper.like("role", "%" + params.getRole() + "%");
+        }
+        Page<User> page = userService.page(new Page<User>(pageNumber, pageSize), wrapper);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}")
+    @ApiOperation(value = "", notes = "")
+    public ResponseEntity delete(@PathVariable("id") @ApiParam(value = "id") Long id) {
+        userService.removeById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/save")
+    @ApiOperation(value = "", notes = "")
+    public ResponseEntity save(@ModelAttribute @ApiParam(value = "user") User user) {
+        if (StringUtils.isNotBlank(user.getPassword())) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        } else {
+            user.setPassword(null);
+        }
+        userService.update(user);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

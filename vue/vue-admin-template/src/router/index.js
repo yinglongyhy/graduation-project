@@ -63,6 +63,12 @@ export const constantRoutes = [
     meta: { title: '数据库表管理', icon: 'table' },
     children: [
       {
+        path: 'userTable',
+        name: 'UserTable',
+        component: () => import('@/views/userTable/index'),
+        meta: { title: 'UserTable', icon: '' }
+      },
+      {
         path: 'addressTable',
         name: 'AddressTable',
         component: () => import('@/views/addressTable/index'),
