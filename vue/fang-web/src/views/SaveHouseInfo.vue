@@ -139,7 +139,7 @@ export default {
       for (var i = 0; i < row.pictureList.length; i++) {
         var name = row.pictureList[i];
         this.formLabelAlign.pictureList.push({
-          name: name,
+          name: name.substring(name.lastIndexOf('/') + 1),
           url: name,
         });
       }

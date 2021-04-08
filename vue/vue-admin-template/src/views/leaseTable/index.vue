@@ -20,7 +20,7 @@
       </el-table-column>
       <el-table-column label="房源编号" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
+          <span>{{ scope.row.houseInfo }}</span>
         </template>
       </el-table-column>
       <el-table-column label="租金" align="center">
