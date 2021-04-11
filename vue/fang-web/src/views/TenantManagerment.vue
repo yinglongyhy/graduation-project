@@ -9,7 +9,7 @@
             remote
             reserve-keyword
             placeholder="请输入关键词"
-            clearable=true
+            :clearable="true"
             :remote-method="remoteMethod"
             :loading="loading"
             style="width: 100%"

@@ -1,5 +1,6 @@
 <template>
-  <div class="form">
+  <div>
+    <div class="form">
     <header class="header">发布房源</header>
     <div class="contain">
       <el-form
@@ -89,6 +90,7 @@
           </el-button-group>
         </el-form-item>
       </el-form>
+    </div>
     </div>
   </div>
 </template>
@@ -228,13 +230,10 @@ export default {
 <style lang="stylus" scoped>
 .form {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 800px;
-  height: 800px;
-
+  padding:1px;
+  margin: 0 20vw;
+  width: 60vw;
+}
   .contain {
     width: 700px;
     margin: 50px auto;
@@ -247,5 +246,5 @@ export default {
     font-weight: bold;
     font-size: 25px;
   }
-}
+
 </style>
