@@ -6,14 +6,15 @@
         :label-position="labelPosition"
         label-width="60px"
         :model="formLabelAlign"
+        :rules="rules"
       >
-        <el-form-item label="用户名">
+        <el-form-item label="用户名" prop="name">
           <el-input v-model="formLabelAlign.name"></el-input>
         </el-form-item>
-        <el-form-item label="手机号">
+        <el-form-item label="手机号" prop="phoneNum">
           <el-input v-model="formLabelAlign.phoneNum"></el-input>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密码" prop="password">
           <el-input v-model="formLabelAlign.password" show-password></el-input>
         </el-form-item>
         <el-form-item>
@@ -35,6 +36,29 @@ import axios from "axios";
 export default {
   name: "SignUp",
   data() {
+    var validateName = (rule, value, callback) => {
+      if (value === null || value === "") {
+        callback(new Error("请输入用户名"));
+      } else {
+        callback();
+      }
+    };
+    var validatePhoneNum = (rule, value, callback) => {
+      if (value === null || value === "") {
+        callback(new Error("请输入手机号"));
+      }  else if (!(/^1(3|4|5|7|8)\d{9}$/.test(value))) {
+        callback(new Error("请输入合法的手机号"));
+      } else {
+        callback();
+      }
+    };
+    var validatePassword = (rule, value, callback) => {
+      if (value === null || value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        callback();
+      }
+    };
     return {
       labelPosition: "left",
       userToken: null,
@@ -46,12 +70,17 @@ export default {
         password: null,
         role: null,
       },
+      rules: {
+        name: [{ validator: validateName, trigger: "blur" }],
+        phoneNum: [{ validator: validatePhoneNum, trigger: "blur" }],
+        password: [{ validator: validatePassword, trigger: "blur" }],
+      },
     };
   },
   methods: {
     onSubmit() {
       console.log("submit");
-      this.formLabelAlign.role = 'user'
+      this.formLabelAlign.role = "user";
 
       if (
         this.formLabelAlign.name === null ||
