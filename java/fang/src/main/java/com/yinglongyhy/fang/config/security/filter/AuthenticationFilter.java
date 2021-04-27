@@ -45,14 +45,14 @@ public class AuthenticationFilter extends BasicAuthenticationFilter {
         TokenThreadLocal.remove();
         UserThreadLocal.remove();
         String token = request.getHeader("token");
-        if (StringUtils.isBlank(token)) {
+        if (StringUtils.isBlank(token) || token.equals("null")) {
             chain.doFilter(request, response);
             return;
         }
         LoginToken loginToken = loginTokenMapper.selectOne(new QueryWrapper<LoginToken>().eq("token", token));
         // 检查loginToken是否为空，登陆ip是否改变，登陆信息是否过期
         if (Objects.isNull(loginToken) 
-                || !request.getRemoteHost().equals(loginToken.getIp()) 
+//                || !request.getRemoteHost().equals(loginToken.getIp())
                 || Duration.between(LocalDateTime.now(), loginToken.getModifiedTime()).toDays() > EXPIRATION_DAYS) {
             chain.doFilter(request, response);
             return;

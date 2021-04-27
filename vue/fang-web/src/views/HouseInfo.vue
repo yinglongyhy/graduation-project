@@ -170,7 +170,7 @@ export default {
             this.formLabelAlign.pictureList.push({
               id: i,
               name: name,
-              url: "http://localhost:8080/images/" + name,
+              url: "/api/images/" + name,
             });
           }
         })

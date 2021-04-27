@@ -25,6 +25,9 @@ public class HouseInfoParamsDto {
     @ApiModelProperty(value = "地址")
     private String address;
 
+    @ApiModelProperty(value = "标签")
+    private Integer label;
+
     @ApiModelProperty(value = "租金类型，1：租约租金，0：房源租金，默认0")
     private Integer rentType;
 }

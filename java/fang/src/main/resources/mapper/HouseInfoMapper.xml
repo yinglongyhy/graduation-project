@@ -62,12 +62,16 @@
         from house_info
         left join address on address.deleted=0 and address.code=house_info.address
         left join lease on lease.deleted=0 and lease.house_info=house_info.id
+        left join label2house_info on label2house_info.deleted=0 and label2house_info.house_info=house_info.id
         where house_info.deleted=0
         <if test="params.owner != null">
             and house_info.owner = #{params.owner, jdbcType=VARCHAR }
         </if>
         <if test="params.address != null">
             and house_info.address like concat(#{params.address, jdbcType=VARCHAR }, '%')
+        </if>
+        <if test="params.label != null">
+            and label2house_info.label = #{params.label, jdbcType=INTEGER }
         </if>
         <if test="params.tenant != null">
             and lease.tenant = #{params.tenant, jdbcType=VARCHAR }

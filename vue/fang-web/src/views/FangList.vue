@@ -1,15 +1,15 @@
 <template>
   <div class="contain">
     <el-card style="width: 100%; margin-bottom: 20px;">
-      <el-form :inline="true" :model="params" style=" float: left;">
-        <el-form-item label="地址">
+      <el-form :model="params" class="choice">
+        <!-- <el-form-item label="地址">
           <el-select
             v-model="params.address"
             filterable
             remote
             reserve-keyword
             placeholder="请输入关键词"
-            clearable=true
+            :clearable="true"
             :remote-method="remoteMethod"
             :loading="loading"
             style="width: 100%"
@@ -22,14 +22,22 @@
             >
             </el-option>
           </el-select>
+        </el-form-item> -->
+        <el-form-item label="区域">
+          <el-link v-for="item in area" :key="item.value" style="margin: 0 20px;" :type="item.type" @click="areaClick(item)">
+            {{item.key}}
+          </el-link>
+        </el-form-item>
+        <el-form-item label="特点">
+          <el-link v-for="item in homeLabel" :key="item.value" style="margin: 0 20px;" :type="item.type" @click="labelClick(item)">
+            {{item.key}}
+          </el-link>
         </el-form-item>
         <el-form-item label="价格区间">
-          <el-input v-model="params.rentMin" style="width: 100px;"></el-input>
+          <el-input v-model="params.rentMin" style="width: 100px;" size="small"></el-input>
            - 
-          <el-input v-model="params.rentMax" style="width: 100px;"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-input v-model="params.rentMax" style="width: 100px;" size="small"></el-input>
+          <el-button type="primary" @click="onSubmit" style="margin-left: 10px;" size="small">查询</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -103,9 +111,35 @@ export default {
       addressOptions: [],
       params: {
         address: null,
+        label: null,
         rentMin: null, 
         rentMax: null
       },
+      area: [
+        {key: '不限', value: null, type: ''},
+        {key: '荔湾', value: 440103, type: ''},
+        {key: '越秀', value: 440104, type: ''},
+        {key: '海珠', value: 440105, type: ''},
+        {key: '天河', value: 440106, type: ''},
+        {key: '白云', value: 440111, type: ''},
+        {key: '黄埔', value: 440112, type: ''},
+        {key: '番禺', value: 440113, type: ''},
+        {key: '花都', value: 440114, type: ''},
+        {key: '南沙', value: 440115, type: ''},
+        {key: '从化', value: 440117, type: ''},
+        {key: '增城', value: 440118, type: ''},
+      ],
+      homeLabel: [
+        {key: '不限', value: null, type: ''},
+        {key: '南北通透', value: 5, type: ''},
+        {key: '交通方便', value: 6, type: ''},
+        {key: '阳光充足', value: 7, type: ''},
+        {key: '配套设施完善', value: 8, type: ''},
+        {key: '小区绿化好', value: 9, type: ''},
+        {key: '安静', value: 10, type: ''},
+        {key: '阳光好', value: 11, type: ''},
+        {key: '中层', value: 12, type: ''},
+      ],
     };
   },
   created() {
@@ -120,6 +154,7 @@ export default {
       query = query + '&pageNumber=' + this.currentPage
       query = query + '&pageSize=' + this.pageSize
       if (this.params.address !== null) query = query + '&address=' + this.params.address
+      if (this.params.label !== null) query = query + '&label=' + this.params.label
       if (this.params.rentMin !== null) query = query + '&rentMin=' + this.params.rentMin
       if (this.params.rentMax !== null) query = query + '&rentMax=' + this.params.rentMax
       this.getList(query)
@@ -133,7 +168,7 @@ export default {
           console.log(res);
           this.tableData = res.data.records;
           for (var i = 0; i < this.tableData.length; i++) {
-            this.tableData[i].pictureList = this.tableData[i].pictureList.map(function(el) { return 'http://localhost:8080/images/' + el } );
+            this.tableData[i].pictureList = this.tableData[i].pictureList.map(function(el) { return '/api/images/' + el } );
           }
           this.total = res.data.total;
         })
@@ -173,6 +208,20 @@ export default {
           id: row.id,
         },
       });
+    },
+    areaClick(item) {
+      this.params.address = item.value;
+      for(let i = 0; i < this.area.length; i++) {
+        this.area[i].type = '';
+      }
+      item.type = 'danger';
+    },
+    labelClick(item) {
+      this.params.label = item.value;
+      for(let i = 0; i < this.homeLabel.length; i++) {
+        this.homeLabel[i].type = '';
+      }
+      item.type = 'danger';
     },
     handleSizeChange(val) {
       this.currentPage = 1
@@ -222,5 +271,9 @@ export default {
 
 .page {
   text-align: center
+}
+
+.choice {
+  text-align: left;
 }
 </style>

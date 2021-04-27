@@ -214,12 +214,12 @@ export default {
       console.log(fileList);
       this.formLabelAlign.pictureList.push({
         name: file.response,
-        url: "http://localhost:8080/images/" + file.response,
+        url: "/api/images/" + file.response,
       });
       // var imageName = response;
       // fileList.push({
       //   name: imageName,
-      //   url: "http://localhost:8080/images/" + imageName,
+      //   url: "/api/images/" + imageName,
       // });
       // console.log(fileList);
     },
@@ -230,7 +230,7 @@ export default {
 <style lang="stylus" scoped>
 .form {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
-  padding:1px;
+  padding: 1px;
   margin: 0 20vw;
   width: 60vw;
 }

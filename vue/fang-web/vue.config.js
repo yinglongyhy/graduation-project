@@ -1,4 +1,6 @@
 module.exports = {
+    publicPath: './',
+    outputDir: 'yanghongyuUser',
     devServer: {
         port: '9000',
         proxy: {

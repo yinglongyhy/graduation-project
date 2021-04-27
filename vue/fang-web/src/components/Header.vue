@@ -5,7 +5,7 @@
       class="el-menu-demo"
       mode="horizontal"
       text-color="black"
-      router="true"
+      :router="true"
     >
       <el-menu-item index="/" style="float: left">首页</el-menu-item>
       <el-menu-item index="/signUp" v-if="token === null" style="float: right"

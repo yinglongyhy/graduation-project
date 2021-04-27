@@ -6,7 +6,7 @@
         <a target="_blank" @click="detail(item)">
           <img
             v-if="item.pictureList.length > 0"
-            :src="'http://localhost:8080/images/' + item.pictureList[0]"
+            :src="'/api/images/' + item.pictureList[0]"
           />
         </a>
       </dt>

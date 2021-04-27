@@ -9,7 +9,7 @@
             remote
             reserve-keyword
             placeholder="请输入关键词"
-            clearable=true
+            :clearable="true"
             :remote-method="remoteMethod"
             :loading="loading"
             style="width: 100%"
@@ -184,7 +184,7 @@ export default {
           console.log(res);
           this.tableData = res.data.records;
           for (var i = 0; i < this.tableData.length; i++) {
-            this.tableData[i].pictureList = this.tableData[i].pictureList.map(function(el) { return 'http://localhost:8080/images/' + el } );
+            this.tableData[i].pictureList = this.tableData[i].pictureList.map(function(el) { return '/api/images/' + el } );
           }
           this.total = res.data.total;
         })
